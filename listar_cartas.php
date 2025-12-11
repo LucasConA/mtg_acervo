@@ -1,6 +1,6 @@
 <?php
 $pdo = new PDO("mysql:host=localhost;dbname=acervo", "root", "");
-
+// Consulta com JOINs para pegar os nomes das Foreign keys
 $sql = $pdo->query("
     SELECT 
         cartas.id,
