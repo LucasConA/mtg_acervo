@@ -1,5 +1,5 @@
 <?php
-$pdo = new PDO("mysql:host=localhost;dbname=banco_de_dadosTeste", "root", "");
+$pdo = new PDO("mysql:host=localhost;dbname=acervo", "root", "");
 
 // Consulta com JOINs para pegar os nomes das FK
 $sql = $pdo->query("
