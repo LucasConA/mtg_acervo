@@ -1,7 +1,6 @@
 <?php
 $pdo = new PDO("mysql:host=localhost;dbname=acervo", "root", "");
 
-// Consulta com JOINs para pegar os nomes das FK
 $sql = $pdo->query("
     SELECT 
         cartas.id,
@@ -14,11 +13,11 @@ $sql = $pdo->query("
         cartas.foil,
         cartas.valor
     FROM cartas
-    JOIN edicoes ON cartas.edicao_id = edicoes.id
-    JOIN raridades ON cartas.raridade_id = raridades.id
-    JOIN condicao ON cartas.condicao_id = condicao.id
-    JOIN idiomas ON cartas.idioma_id = idiomas.id
-    JOIN tipos ON cartas.tipo_id = tipos.id
+    JOIN edicoes ON cartas.id_edicao = edicoes.id
+    JOIN raridades ON cartas.id_condicao = raridades.id
+    JOIN condicao ON cartas.id_condicao = condicao.id
+    JOIN idiomas ON cartas.id_idioma = idiomas.id
+    JOIN tipos ON cartas.id_tipo = tipos.id
     ORDER BY cartas.nome ASC
 ");
 
