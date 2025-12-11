@@ -1,0 +1,237 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'FonteLogo' ;
+    src:local(Roboto-Medium);
+}
+
+    body {
+        background-color: #202020;
+        color: rgba (0,0,0,1);
+        font-family: "Roboto";
+        src:local(Roboto-Medium);
+    }
+
+    div#interface {
+        width:1100px;
+        background-color: #202020;
+        margin: -20px auto 0px auto;
+        box-shadow: 0px, 0px, 10px rgba(0,0,0,0.5);
+        padding: 10px 10px 10px 10px;
+    }
+
+    p   {
+        text-align: justify;
+        text-indent: 50px;
+    }
+
+    a {
+        color: #fff;
+        text-decoration: none;
+        
+        left: 1000px;
+        border: #fff;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+
+    header#cabecalho {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px #606060 solid;
+        height: 80px;
+        padding: 0px 20px;
+        background-color: #202020;
+    }
+
+    header#cabecalho h1{
+        font-family: local(Roboto-Medium);
+        font-size: 50px;
+        color: #d4af37;
+        text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+        margin-bottom: 0px;
+        padding: 0px;
+    }
+    header#cabecalho h2{
+        font-family: "Titillium Web", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 15pt;
+        color: white;
+        text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+        padding: 0px;
+        margin-top: 0px;     
+    }   
+
+    h1 {
+        color: #dddddd;
+        font-size: 25px;
+    }
+/* Formatação do menu */
+    nav#menu {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 15px;
+    }
+
+    nav#menu ul{
+        display: flex;
+        gap: 15px;
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    nav#menu li {
+        display: inline-block;
+    }
+
+
+    nav#menu h1 {
+        display: none;
+    }
+
+    nav#menu a{
+        border: 1px solid #d4af37;
+        color: #d4af37;
+        padding: 6px 12px;
+        border-radius: 6px;
+        transition: all 0,3 ease;
+    }
+
+    nav#menu a:hover {
+        background-color: #d4af37;
+        text-decoration: underline;
+        color: #202020;
+    }
+
+
+footer#rodape {
+    clear: both;
+    border-top: 1px solid #606060;
+}
+
+footer#rodape p{
+    text-align: center;
+    color: #ffffff;
+}
+
+form#cards {
+    color: #dddddd;
+}
+
+legend{
+    color: #dddddd;
+    font-size: 25px;
+    font-family: local(Roboto-Medium);
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    background-color: #2a2a2a;   
+    color: #f0f0f0;             
+    border: 1px solid #444;     
+    border-radius: 5px;
+    padding: 6px 10px;
+    font-size: 12pt;
+    outline: none;
+    transition: all 0.3s ease;
+}
+select:hover, select:focus {
+    background-color: #3a3a3a;
+
+}
+
+form#cards {
+    color: white;
+}
+
+form#cards fieldset {
+    border: 1px solid #606060;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-top: 10px;
+}
+
+form#cards legend {
+    color: #dddddd;
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+form#cards .linha {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: #888;
+    background-color: #333;
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+input[type="radio"] {
+    accent-color: #888; 
+}
+
+
+form label {
+    color: #e0e0e0;
+    font-size: 11pt;
+    margin: 5px;
+}
+
+#cards label  {
+    margin-top: 15px;
+    display: inline-block;
+}
+
+#lista_cartas {  
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #1e1e1e; 
+    color: #f5f5f5; }
+
+#lista_cartas th, #lista_cartas td {
+border: 1px solid #333;
+  padding: 10px;
+  text-align: center; 
+}
+
+#lista_cartas th {
+  background-color: #2b2b2b;
+  font-weight: bold;
+}
+
+#lista_cartas tr:hover {
+  background-color: #2a2a2a;
+}
+
+.botao {
+    background-color: #2a2a2a;   
+    color: #f0f0f0;             
+    border: 1px solid #d4af37;  
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+    margin-top: 10px;
+}
+
+.botao:hover {
+    background-color: #d4af37;
+    text-decoration: underline;
+}

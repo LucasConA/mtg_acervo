@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="_css/estilo.css">
+    <title>Acervo MTG</title>
+</head>
+
+<body>
+<div id="interface">
+    <header id="cabecalho"> 
+       <h1> Acervo MTG</h1> 
+       <nav id="menu">
+            <ul>
+                <li><a href="/colecao.php" class="botao">Minha Coleção</a></li>
+
+            </ul>
+       </nav>
+    </header>  
+    <h1>Minha Coleção</h1> 
+    <form method="post" id="cards" action="">
+            <legend>Filtrar </legend>
+                <label for="cNome"></label><input type="text" name="nomeCarta" id="cNome" placeholder="Nome" size=30></input>
+            <label for="cEdicao"></label>
+            <select name="nomeEdicao" id="cEdicao">
+                <option value=""> Edição</option>
+                <option value="mkm">Murders at Karlov Manor</option>
+                <option value="woe">Wilds of Eldraine</option>
+                <option value="mom">March of the Machine</option>
+            </select>
+
+                <label for="cRar"></label><select>
+                    <option value="com">Comum</option>
+                    <option value="inc">Incomum</option>
+                    <option value="rar">Rara</option>
+                    <option value="mit">Mitica</option>
+                </select>
+                <label for="cEst"></label><select>
+                    <option value="nova">M</option>
+                    <option value="near">NM</option>
+                    <option value="lev">SP</option>
+                    <option value="mod">MP</option>
+                    <option value="muito">HP</option>
+                    <option value="damg">D</option>
+                </select><br>
+
+                                
+                <label for="cIdioma">Idioma </label><select>
+                    <option value="br">Português</option>
+                    <option value="ing">Inglês</option>
+                    <option value="esp">Espanhol</option>
+                    <option value="jap">Japonês</option>
+                </select>
+                
+                <label for="Tipo">Tipo </label><select>
+                    <option value="ter">Terreno</option>                   
+                    <option value="criatura">Criatura</option>
+                    <option value="instant">Mágica Instantanea</option>
+                    <option value="Feit">Feitiço</option>
+                    <option value="Encan">Encantamento</option>
+                    <option value="arte">Artefato</option>
+                    <option value="pwalker">Planeswalker</option>
+                </select><br>
+                <input type="radio" name="foil" id="cnFoil" value="normal">
+                <label for="cnFoil">Normal</label>
+
+                <input type="radio" name="foil" id="cFoil" value="foil">
+                <label for="cFoil">Foil</label><br>
+
+                <label for="vCarta"></label>Valor R$ <input type="number" name="valorCarta"  id="vCarta" min=0 step="0.01", placeholder="0.00"><br>
+
+    <input type="submit" class="botao" value="Adicionar carta">
+
+    <table id="lista_cartas">   
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Edição</th>
+                <th>Raridade</th>
+                <th>Condição</th>
+                <th>Idioma</th>
+                <th>Tipo</th>
+                <th>Foil</th>
+                <th>Valor (R$)</th>
+            </tr>
+        </thead>
+    </table>
+    </form>  
+    <?php
+    ?>
+    <footer id="rodape">
+    <p>Copyright &copy; 2025 - by Me</p>
+    </footer>
+</div>
+</body>
+</html>
