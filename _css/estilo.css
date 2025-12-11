@@ -70,6 +70,11 @@
         color: #dddddd;
         font-size: 25px;
     }
+
+    th {
+        color: #dddddd;
+        font-size: 18px;
+    }
 /* Formatação do menu */
     nav#menu {
         display: flex;
