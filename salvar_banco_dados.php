@@ -1,16 +1,22 @@
 <?php
-//Dados enviados pelo formulário
-$nomeCarta = $_POST['nomeCarta'];
-$edicao = $_POST['nomeEdicao'];
 
-//Conexão com MySQL
-$pdo = new PDO("mysql:host=localhost;dbname=banco_de_dadosTeste", "root", "");
+$pdo = new PDO("mysql:host=localhost;dbname=mtg", "root", "");
 
-//Comando SQL para inserir variavel nos valores
-$sql = $pdo->prepare("INSERT INTO usuarios (nome,email) VALUES (?,?)");
-$sql->execute([$nomeCarta, $edicao]);
+$stmt = $pdo->prepare("
+    INSERT INTO cartas 
+    (nome, id_edicao, id_raridade, id_condicao, id_idioma, id_tipo, foil, valor)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+");
 
-echo "Usuário cadastrado com sucesso!";
+$stmt->execute([
+    $_POST['nomeCarta'],
+    $_POST['nomeEdicao'],
+    $_POST['raridade'],
+    $_POST['condicao'],
+    $_POST['idioma'],
+    $_POST['tipo'],
+    $_POST['foil'] === "foil" ? 1 : 0,
+    $_POST['valorCarta']
+]);
 
-echo "<a href='index.html'>Voltar para o cadastro</a>";
-?>
+echo "Carta adicionada com sucesso!";
