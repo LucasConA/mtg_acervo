@@ -19,7 +19,7 @@
     </header>  
     <h1>Minha Coleção</h1> 
     <form method="post" action="salvar_banco_dados.php">
-    Nome: <input type="text" name="nomeCarta"><br>
+    Nome: <input type="text" name="nomeCarta" required><br>
 
     Edição:
     <select name="nomeEdicao">
@@ -28,8 +28,8 @@
     </select><br>
 
     Raridade:
-    <select name="raridade">
-        <?php include 'php/carregar_raridades.php'; ?>
+    <select name="raridade" required>
+        <?php include ../php/carregar_raridades.php'; ?>
     </select><br>
 
     Condição:
@@ -43,15 +43,15 @@
     </select><br>
 
     Tipo:
-    <select name="tipo">
+    <select name="tipo" required>
         <?php include 'php/carregar_tipos.php'; ?>
     </select><br>
 
     Foil:
-    <input type="radio" name="foil" value="normal"> Normal
+    <input type="radio" name="foil" value="normal" checked> Normal
     <input type="radio" name="foil" value="foil"> Foil<br>
 
-    Valor R$: <input type="number" name="valorCarta" step="0.01"><br>
+    Valor R$: <input type="number" name="valorCarta" step="0.01" min="0"><br>
 
     <button type="submit">Adicionar carta</button>
 </form>
