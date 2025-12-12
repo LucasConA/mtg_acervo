@@ -29,7 +29,7 @@
 
     Raridade:
     <select name="raridade" required>
-        <?php include ../php/carregar_raridades.php'; ?>
+        <?php include 'php/carregar_raridades.php'; ?>
     </select><br>
 
     Condição:
