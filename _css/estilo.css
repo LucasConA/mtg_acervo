@@ -76,12 +76,9 @@
         font-size: 18px;
     }
 
-    label {
+    .campoTitulo {
     color: #dddddd;
-    font-size: 18px;
-    display: block; /* faz ficar acima do select */
-    margin-top: 10px;
-    }
+    font-size: 18px;}
 
 
 /* Formatação do menu */
