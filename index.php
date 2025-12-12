@@ -17,11 +17,11 @@
             </ul>
        </nav>
     </header>  
-    <h1>Minha Coleção</h1> 
+    <h1>Adicionar a Coleção</h1> 
     <form method="post" action="salvar_banco_dados.php">
     Nome: <input type="text" name="nomeCarta" required><br>
 
-    Edição:
+    <th>Edição:</th>
     <select name="nomeEdicao">
         <option value="">Selecione</option>
         <?php include 'php/carregar_edicoes.php'; ?>
