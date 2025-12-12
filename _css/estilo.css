@@ -75,6 +75,15 @@
         color: #dddddd;
         font-size: 18px;
     }
+
+    label {
+    color: #dddddd;
+    font-size: 18px;
+    display: block; /* faz ficar acima do select */
+    margin-top: 10px;
+    }
+
+
 /* Formatação do menu */
     nav#menu {
         display: flex;
