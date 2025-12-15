@@ -4,7 +4,6 @@ error_reporting(E_ALL);
 
 require 'conexao.php';
 
-// 1️⃣ Valida o ID
 $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
 if (!$id) {
