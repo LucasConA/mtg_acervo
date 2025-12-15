@@ -12,7 +12,7 @@
        <h1> Acervo MTG</h1> 
        <nav id="menu">
             <ul>
-                <li><a href="/colecao.php" class="botao">Minha Coleção</a></li>
+                <li><a href="/mtg_acervo/colecao.php" class="botao">Minha Coleção</a></li>
 
             </ul>
        </nav>

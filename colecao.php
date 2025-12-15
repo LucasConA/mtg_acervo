@@ -15,7 +15,7 @@ include "php/listar_cartas.php";
 <header id="cabecalho">
     <h1>Minha Coleção</h1>
     <nav>
-        <a href="/index.php" class="botao">Adicionar Carta</a>
+        <a href="/mtg_acervo/" class="botao">Adicionar Carta</a>
     </nav>
 </header>
 
@@ -36,6 +36,7 @@ include "php/listar_cartas.php";
             <th>Tipo</th>
             <th>Foil</th>
             <th>Valor (R$)</th>
+            <th>Ações</th>
         </tr>
     </thead>
 
@@ -50,6 +51,14 @@ include "php/listar_cartas.php";
             <td><?= $carta['tipo'] ?></td>
             <td><?= $carta['foil'] ? 'Sim' : 'Não' ?></td>
             <td><?= number_format($carta['valor'], 2, ',', '.') ?></td>
+            <td>
+            <a href="/mtg_acervo/editar_carta.php?id=<?= $carta['id'] ?>" class="botao">Editar</a>
+            <a href="/mtg_acervo/excluir_carta.php?id=<?= $carta['id'] ?>"
+            class="botao botao-excluir"
+            onclick="return confirm('Tem certeza que deseja excluir esta carta?');">
+            Excluir
+        </a>
+    </td>
         </tr>
         <?php endforeach; ?>
     </tbody>
