@@ -14,7 +14,7 @@ include "php/listar_cartas.php";
 
 <header id="cabecalho">
     <h1>Minha Coleção</h1>
-    <nav>
+    <nav id="menu">
         <a href="/mtg_acervo/" class="botao">Adicionar Carta</a>
     </nav>
 </header>

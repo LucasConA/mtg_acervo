@@ -17,6 +17,8 @@
             </ul>
        </nav>
     </header>  
+
+<!-- Adicionar -->
     <h1>Adicionar a Coleção</h1> 
     <form method="post" action="salvar_banco_dados.php">
     <span class="campoTitulo">Nome:</span> <input type="text" name="nomeCarta" required><br>
@@ -48,8 +50,19 @@
     </select><br>
 
     <span class="campoTitulo">Foil:</span>
-    <input type="radio" name="foil" value="normal" checked> <span class="campoTitulo">Normal</span>
-    <input type="radio" name="foil" value="foil"> <span class="campoTitulo">Foil</span><br>
+
+    <div class="radio-grupo">
+        <label>
+            <input type="radio" name="foil" value="normal" checked>
+            Normal
+        </label>
+
+        <label>
+            <input type="radio" name="foil" value="foil">
+            Foil
+        </label>
+    </div>
+
 
     <span class="campoTitulo">Valor R$:</span> <input type="number" name="valorCarta" step="0.01" min="0"><br>
 
@@ -60,9 +73,11 @@
 
     <hr>
 
+<!-- Buscar -->
 <h1>Buscar cartas na coleção</h1>
 
-<form method="get">
+<form method="get" action="#busca-cartas">
+
 
     <span class="campoTitulo">Nome:</span>
     <input type="text" name="busca_nome"

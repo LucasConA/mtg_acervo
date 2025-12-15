@@ -114,12 +114,17 @@ if (!$carta) {
         <?php endforeach; ?>
     </select><br>
 
-    <span class="campoTitulo">Foil:</span>
-    <input type="radio" name="foil" value="normal"
-        <?= !$carta['foil'] ? 'checked' : '' ?>> Normal
+    <div class="radio-grupo">
+        <label>
+            <input type="radio" name="foil" value="normal" checked>
+            Normal
+        </label>
 
-    <input type="radio" name="foil" value="foil"
-        <?= $carta['foil'] ? 'checked' : '' ?>> Foil<br>
+        <label>
+            <input type="radio" name="foil" value="foil">
+            Foil
+        </label>
+    </div>
 
     <span class="campoTitulo">Valor R$:</span>
     <input type="number" name="valorCarta" step="0.01" min="0"
