@@ -1,6 +1,6 @@
 <?php
 
-$pdo = new PDO("mysql:host=localhost;dbname=mtg", "root", "");
+$pdo = new PDO("mysql:host=localhost;dbname=acervo", "root", "");
 
 $stmt = $pdo->prepare("
     INSERT INTO cartas 

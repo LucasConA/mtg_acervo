@@ -1,69 +1,31 @@
 <?php
-$pdo = new PDO("mysql:host=localhost;dbname=acervo", "root", "");
-// Consulta com JOINs para pegar os nomes das Foreign keys
+require "conexao.php";
+
+/*
+  Este arquivo é responsável APENAS por:
+  - Buscar as cartas no banco
+  - Resolver os JOINs
+  - Entregar os dados prontos em $cartas
+*/
+
 $sql = $pdo->query("
     SELECT 
-        cartas.id,
-        cartas.nome,
-        edicoes.nome AS edicao,
-        raridades.nome AS raridade,
-        condicao.nome AS condicao,
-        idiomas.nome AS idioma,
-        tipos.nome AS tipo,
-        cartas.foil,
-        cartas.valor
-    FROM cartas
-    JOIN edicoes ON cartas.id_edicao = edicoes.id
-    JOIN raridades ON cartas.id_condicao = raridades.id
-    JOIN condicao ON cartas.id_condicao = condicao.id
-    JOIN idiomas ON cartas.id_idioma = idiomas.id
-    JOIN tipos ON cartas.id_tipo = tipos.id
-    ORDER BY cartas.nome ASC
+        c.id,
+        c.nome AS carta,
+        e.nome AS edicao,
+        r.nome AS raridade,
+        co.nome AS condicao,
+        i.nome AS idioma,
+        t.nome AS tipo,
+        c.foil,
+        c.valor
+    FROM cartas c
+    INNER JOIN edicoes   e  ON c.id_edicao   = e.id
+    INNER JOIN raridades r  ON c.id_raridade = r.id
+    INNER JOIN condicao  co ON c.id_condicao = co.id
+    INNER JOIN idiomas   i  ON c.id_idioma   = i.id
+    INNER JOIN tipos     t  ON c.id_tipo     = t.id
+    ORDER BY c.nome ASC
 ");
 
 $cartas = $sql->fetchAll(PDO::FETCH_ASSOC);
-?>
-
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Acervo MTG - Todas as Cartas</title>
-    <link rel="stylesheet" href="_css/estilo.css">
-</head>
-<body>
-
-<h1>Lista de Cartas Cadastradas</h1>
-
-<table border="1" cellpadding="8">
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Edição</th>
-            <th>Raridade</th>
-            <th>Condição</th>
-            <th>Idioma</th>
-            <th>Tipo</th>
-            <th>Foil</th>
-            <th>Valor (R$)</th>
-        </tr>
-    </thead>
-
-    <tbody>
-    <?php foreach ($cartas as $c): ?>
-        <tr>
-            <td><?= $c['nome'] ?></td>
-            <td><?= $c['edicao'] ?></td>
-            <td><?= $c['raridade'] ?></td>
-            <td><?= $c['condicao'] ?></td>
-            <td><?= $c['idioma'] ?></td>
-            <td><?= $c['tipo'] ?></td>
-            <td><?= $c['foil'] ?></td>
-            <td><?= number_format($c['valor'], 2, ',', '.') ?></td>
-        </tr>
-    <?php endforeach; ?>
-    </tbody>
-</table>
-
-</body>
-</html>
