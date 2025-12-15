@@ -241,7 +241,7 @@ border: 1px solid #333;
     background-color: #2a2a2a;   
     color: #f0f0f0;             
     border: 1px solid #d4af37;  
-    padding: 8px 15px;
+    padding: 8px 15px 8px 15px;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.1s;
@@ -259,12 +259,12 @@ border: 1px solid #333;
 }
 
 #busca-cartas th {
-    color: #f5c542; /* dourado MTG 😄 */
+    color: #f5c542; 
     border-bottom: 1px solid #555;
 }
 
 #busca-cartas td {
-    color: #e0e0e0; /* texto claro */
+    color: #e0e0e0; 
     padding: 6px;
 }
 
