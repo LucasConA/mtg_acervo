@@ -22,7 +22,7 @@ include "php/listar_cartas.php";
 <main>
 
 <?php if (count($cartas) == 0): ?>
-    <p>Nenhuma carta cadastrada ainda.</p>
+    <p><h1>Nenhuma carta cadastrada ainda.</h1></p>
 <?php else: ?>
 
 <table id="lista_cartas" border="1" cellpadding="8">
@@ -52,15 +52,20 @@ include "php/listar_cartas.php";
             <td><?= $carta['foil'] ? 'Sim' : 'Não' ?></td>
             <td><?= number_format($carta['valor'], 2, ',', '.') ?></td>
             <td>
-            <a href="/mtg_acervo/editar_carta.php?id=<?= $carta['id'] ?>" class="botao">Editar</a>
-            <a href="/mtg_acervo/excluir_carta.php?id=<?= $carta['id'] ?>"
-            class="botao botao-excluir"
-            onclick="return confirm('Tem certeza que deseja excluir esta carta?');">
-            Excluir
         </a>
-    </td>
-        </tr>
-        <?php endforeach; ?>
+            <a href="/mtg_acervo/editar_carta.php?id=<?= $carta['id'] ?>" class="botao">Editar</a>
+
+            <form action="/mtg_acervo/php/excluir_carta.php"
+                      method="post"
+                      style="display:inline"
+                      onsubmit="return confirm('Tem certeza que deseja excluir esta carta?');">
+
+                    <input type="hidden" name="id" value="<?= $carta['id'] ?>">
+                    <button type="submit" class="botao">Excluir
+            </form>
+        </td>
+    </tr>
+    <?php endforeach; ?>
     </tbody>
 </table>
 
