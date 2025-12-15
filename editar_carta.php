@@ -43,7 +43,6 @@ if (!$carta) {
 
 <form method="post" action="php/update_carta.php">
 
-    
     <input type="hidden" name="id" value="<?= $carta['id'] ?>">
 
     <span class="campoTitulo">Nome:</span>
@@ -53,7 +52,7 @@ if (!$carta) {
     <span class="campoTitulo">Edição:</span>
     <select name="nomeEdicao" required>
         <?php
-        $edicoes = $pdo->query("SELECT * FROM edicoes ORDER BY nome")->fetchAll();
+        $edicoes = $pdo->query("SELECT * FROM edicoes ORDER BY id")->fetchAll();
         foreach ($edicoes as $e):
         ?>
             <option value="<?= $e['id'] ?>"
@@ -66,7 +65,7 @@ if (!$carta) {
     <span class="campoTitulo">Raridade:</span>
     <select name="raridade" required>
         <?php
-        $raridades = $pdo->query("SELECT * FROM raridades ORDER BY nome")->fetchAll();
+        $raridades = $pdo->query("SELECT * FROM raridades ORDER BY id")->fetchAll();
         foreach ($raridades as $r):
         ?>
             <option value="<?= $r['id'] ?>"
@@ -79,7 +78,7 @@ if (!$carta) {
     <span class="campoTitulo">Condição:</span>
     <select name="condicao">
         <?php
-        $condicoes = $pdo->query("SELECT * FROM condicao ORDER BY nome")->fetchAll();
+        $condicoes = $pdo->query("SELECT * FROM condicao ORDER BY id")->fetchAll();
         foreach ($condicoes as $c):
         ?>
             <option value="<?= $c['id'] ?>"
@@ -92,7 +91,7 @@ if (!$carta) {
     <span class="campoTitulo">Idioma:</span>
     <select name="idioma">
         <?php
-        $idiomas = $pdo->query("SELECT * FROM idiomas ORDER BY nome")->fetchAll();
+        $idiomas = $pdo->query("SELECT * FROM idiomas ORDER BY id")->fetchAll();
         foreach ($idiomas as $i):
         ?>
             <option value="<?= $i['id'] ?>"
@@ -105,7 +104,7 @@ if (!$carta) {
     <span class="campoTitulo">Tipo:</span>
     <select name="tipo" required>
         <?php
-        $tipos = $pdo->query("SELECT * FROM tipos ORDER BY nome")->fetchAll();
+        $tipos = $pdo->query("SELECT * FROM tipos ORDER BY id")->fetchAll();
         foreach ($tipos as $t):
         ?>
             <option value="<?= $t['id'] ?>"
