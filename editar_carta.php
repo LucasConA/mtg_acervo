@@ -1,5 +1,14 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 require 'php/conexao.php';
+
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+if (!$id) {
+    die("ID inválido");
+}
 
 // Busca da carta
 $sql = "SELECT * FROM cartas WHERE id = ?";

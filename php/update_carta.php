@@ -1,8 +1,15 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 require 'conexao.php';
 
+// 1️⃣ Valida o ID
+$id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
+if (!$id) {
+    die("ID inválido");
+}
 // Recebe os dados
 $nome        = $_POST['nomeCarta'] ?? '';
 $id_edicao   = $_POST['nomeEdicao'] ?? null;
