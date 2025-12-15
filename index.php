@@ -53,8 +53,135 @@
 
     <span class="campoTitulo">Valor R$:</span> <input type="number" name="valorCarta" step="0.01" min="0"><br>
 
-    <button type="submit">Adicionar carta</button>
+    <button type="submit" class="botao">Adicionar carta</button>
 </form>
+
+<section id="busca-cartas">
+
+    <hr>
+
+<h1>Buscar cartas na coleção</h1>
+
+<form method="get">
+
+    <span class="campoTitulo">Nome:</span>
+    <input type="text" name="busca_nome"
+           value="<?= $_GET['busca_nome'] ?? '' ?>"><br>
+
+    <span class="campoTitulo">Edição:</span>
+    <select name="busca_edicao">
+        <option value="">Todas</option>
+        <?php include 'php/carregar_edicoes.php'; ?>
+    </select><br>
+
+    <span class="campoTitulo">Raridade:</span>
+    <select name="busca_raridade">
+        <option value="">Todas</option>
+        <?php include 'php/carregar_raridades.php'; ?>
+    </select><br>
+
+    <span class="campoTitulo">Tipo:</span>
+    <select name="busca_tipo">
+        <option value="">Todos</option>
+        <?php include 'php/carregar_tipos.php'; ?>
+    </select><br>
+
+    <button type="submit" class="botao">Buscar</button>
+
+</form>
+    <?php
+if (
+    !empty($_GET['busca_nome']) ||
+    !empty($_GET['busca_edicao']) ||
+    !empty($_GET['busca_raridade']) ||
+    !empty($_GET['busca_tipo'])
+) 
+ {
+
+    require 'php/conexao.php';
+
+    $sql = "
+        SELECT 
+            cartas.id,
+            cartas.nome,
+            edicoes.nome AS edicao,
+            raridades.nome AS raridade,
+            condicao.nome AS condicao,
+            idiomas.nome AS idioma,
+            tipos.nome AS tipo,
+            cartas.foil,
+            cartas.valor
+        FROM cartas
+        JOIN edicoes ON cartas.id_edicao = edicoes.id
+        JOIN raridades ON cartas.id_raridade = raridades.id
+        JOIN condicao ON cartas.id_condicao = condicao.id
+        JOIN idiomas ON cartas.id_idioma = idiomas.id
+        JOIN tipos ON cartas.id_tipo = tipos.id
+        WHERE 1 = 1
+    ";
+
+    $params = [];
+
+    if (!empty($_GET['busca_nome'])) {
+        $sql .= " AND cartas.nome LIKE ?";
+        $params[] = "%" . $_GET['busca_nome'] . "%";
+    }
+
+    if (!empty($_GET['busca_edicao'])) {
+        $sql .= " AND cartas.id_edicao = ?";
+        $params[] = $_GET['busca_edicao'];
+    }
+
+    if (!empty($_GET['busca_raridade'])) {
+        $sql .= " AND cartas.id_raridade = ?";
+        $params[] = $_GET['busca_raridade'];
+    }
+
+    if (!empty($_GET['busca_tipo'])) {
+        $sql .= " AND cartas.id_tipo = ?";
+        $params[] = $_GET['busca_tipo'];
+    }
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $cartas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+?>
+    <?php if (!empty($cartas)): ?>
+
+<hr>
+<h2>Resultado da busca</h2>
+
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Nome</th>
+        <th>Edição</th>
+        <th>Raridade</th>
+        <th>Condição</th>
+        <th>Idioma</th>
+        <th>Tipo</th>
+        <th>Foil</th>
+        <th>Valor</th>
+    </tr>
+
+    <?php foreach ($cartas as $c): ?>
+        <tr>
+            <td><?= htmlspecialchars($c['nome']) ?></td>
+            <td><?= $c['edicao'] ?></td>
+            <td><?= $c['raridade'] ?></td>
+            <td><?= $c['condicao'] ?></td>
+            <td><?= $c['idioma'] ?></td>
+            <td><?= $c['tipo'] ?></td>
+            <td><?= $c['foil'] ? 'Foil' : 'Normal' ?></td>
+            <td>R$ <?= number_format($c['valor'], 2, ',', '.') ?></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+
+<?php elseif (!empty($_GET)): ?>
+    <p><h2>Nenhuma carta encontrada.</h2></p>
+<?php endif; ?>
+
  
 
     <footer id="rodape">

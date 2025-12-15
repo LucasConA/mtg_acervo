@@ -71,6 +71,12 @@
         font-size: 25px;
     }
 
+    h2 {
+        color: #dddddd;
+        font-size: 20px;
+    }
+
+
     th {
         color: #dddddd;
         font-size: 18px;
@@ -245,4 +251,27 @@ border: 1px solid #333;
 .botao:hover {
     background-color: #d4af37;
     text-decoration: underline;
+}
+
+#busca-cartas table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#busca-cartas th {
+    color: #f5c542; /* dourado MTG 😄 */
+    border-bottom: 1px solid #555;
+}
+
+#busca-cartas td {
+    color: #e0e0e0; /* texto claro */
+    padding: 6px;
+}
+
+#busca-cartas tr:nth-child(even) {
+    background-color: #1e1e1e;
+}
+
+#busca-cartas tr:hover {
+    background-color: #2a2a2a;
 }

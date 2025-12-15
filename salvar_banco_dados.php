@@ -20,3 +20,7 @@ $stmt->execute([
 ]);
 
 echo "Carta adicionada com sucesso!";
+
+header("Location: ../mtg_acervo/");
+exit;
+
