@@ -15,7 +15,7 @@ include "php/listar_cartas.php";
 <header id="cabecalho">
     <h1>Minha Coleção</h1>
     <nav>
-        <a href="index.html">Adicionar Carta</a>
+        <a href="/index.php" class="botao">Adicionar Carta</a>
     </nav>
 </header>
 
