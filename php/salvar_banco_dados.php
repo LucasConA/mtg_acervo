@@ -20,9 +20,11 @@ $raridade   = $_POST['raridade'];
 $condicao   = $_POST['condicao'];
 $idioma     = $_POST['idioma'];
 $tipo       = $_POST['tipo'];
-$valor      = $_POST['valorCarta'];
-$quantidade = (int) $_POST['quantidade'];
 $foil       = ($_POST['foil'] ?? 'normal') === 'foil' ? 1 : 0;
+$quantidade = (int) $_POST['quantidade'];
+$valor      = $_POST['valorCarta'];
+
+
 
 $sql = $pdo->prepare("
     INSERT INTO cartas
