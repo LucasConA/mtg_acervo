@@ -18,6 +18,7 @@ $id_idioma   = $_POST['idioma'] ?? null;
 $id_tipo     = $_POST['tipo'] ?? null;
 $foil        = ($_POST['foil'] === 'foil') ? 1 : 0;
 $valor       = $_POST['valorCarta'] ?? 0;
+$quantidade = $_POST['quantidade'];
 
 // update no banco
 $sql = "
@@ -29,6 +30,7 @@ $sql = "
         id_idioma = ?,
         id_tipo = ?,
         foil = ?,
+        quantidade = ?,
         valor = ?
     WHERE id = ?
 ";
@@ -42,6 +44,7 @@ $stmt->execute([
     $id_idioma,
     $id_tipo,
     $foil,
+    $quantidade,
     $valor,
     $id
 ]);

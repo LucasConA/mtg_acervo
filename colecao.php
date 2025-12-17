@@ -1,6 +1,13 @@
 <?php
 include "php/listar_cartas.php";
+
+require 'php/conexao.php';
+
+$stmtTotal = $pdo->query("SELECT SUM(valor * quantidade) AS total FROM cartas");
+$totalColecao = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 ?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -35,6 +42,7 @@ include "php/listar_cartas.php";
             <th>Idioma</th>
             <th>Tipo</th>
             <th>Foil</th>
+            <th>Quantidade</th>
             <th>Valor (R$)</th>
             <th>Ações</th>
         </tr>
@@ -50,6 +58,7 @@ include "php/listar_cartas.php";
             <td><?= $carta['idioma'] ?></td>
             <td><?= $carta['tipo'] ?></td>
             <td><?= $carta['foil'] ? 'Sim' : 'Não' ?></td>
+            <td><?= $carta['quantidade'] ?></td>
             <td><?= number_format($carta['valor'], 2, ',', '.') ?></td>
             <td>
         </a>
@@ -64,10 +73,24 @@ include "php/listar_cartas.php";
                     <button type="submit" class="botao">Excluir
             </form>
         </td>
+        
     </tr>
     <?php endforeach; ?>
     </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="8" style="text-align:right; font-weight:bold; color:#d4af37;">
+            Valor total da coleção
+        </td>
+        <td colspan="2" style="font-weight:bold; color:#ffffff;">
+            R$ <?= number_format($totalColecao, 2, ',', '.') ?>
+        </td>
+    </tr>
+    </tfoot>
+
+    
 </table>
+
 
 <?php endif; ?>
 

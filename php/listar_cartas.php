@@ -18,6 +18,7 @@ $sql = $pdo->query("
         i.nome AS idioma,
         t.nome AS tipo,
         c.foil,
+        c.quantidade,
         c.valor
     FROM cartas c
     INNER JOIN edicoes   e  ON c.id_edicao   = e.id

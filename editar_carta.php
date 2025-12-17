@@ -126,6 +126,10 @@ if (!$carta) {
         </label>
     </div>
 
+    <span class="campoTitulo">Quantidade:</span>
+    <input type="number" name="quantidade" min="1"
+       value="<?= $carta['quantidade'] ?>"><br>
+
     <span class="campoTitulo">Valor R$:</span>
     <input type="number" name="valorCarta" step="0.01" min="0"
            value="<?= $carta['valor'] ?>"><br>
