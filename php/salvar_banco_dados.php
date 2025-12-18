@@ -10,7 +10,9 @@ $camposObrigatorios = [
 
 foreach ($camposObrigatorios as $campo) {
     if (!isset($_POST[$campo]) || $_POST[$campo] === '') {
-        die("Erro: Campo {$campo} não preenchido.");
+        // erro simples por enquanto
+        header("Location: /mtg_acervo/index.php?erro=campo");
+        exit;
     }
 }
 
@@ -24,29 +26,29 @@ $foil       = ($_POST['foil'] ?? 'normal') === 'foil' ? 1 : 0;
 $quantidade = (int) $_POST['quantidade'];
 $valor      = $_POST['valorCarta'];
 
+try {
+    $sql = $pdo->prepare("
+        INSERT INTO cartas
+        (nome, id_edicao, id_raridade, id_condicao, id_idioma, id_tipo, foil, quantidade, valor)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
 
+    $sql->execute([
+        $nome,
+        $edicao,
+        $raridade,
+        $condicao,
+        $idioma,
+        $tipo,
+        $foil,
+        $quantidade,
+        $valor
+    ]);
 
-$sql = $pdo->prepare("
-    INSERT INTO cartas
-    (nome, id_edicao, id_raridade, id_condicao, id_idioma, id_tipo, foil, quantidade, valor)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-");
+    header("Location: /mtg_acervo/index.php?sucesso=1");
+    exit;
 
-$sql->execute([
-    $nome,
-    $edicao,
-    $raridade,
-    $condicao,
-    $idioma,
-    $tipo,
-    $foil,
-    $quantidade,
-    $valor
-]);
-
-header("Location: /mtg_acervo/index.php?sucesso=1");
-exit;
-
-
-header("Location: /mtg_acervo/");
-exit;
+} catch (PDOException $e) {
+    header("Location: /mtg_acervo/index.php?erro=banco");
+    exit;
+}

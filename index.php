@@ -27,6 +27,23 @@ function fecharSucesso() {
        </nav>
     </header>  
 
+<?php if (isset($_GET['sucesso'])): ?>
+    <div class="mensagem sucesso">
+        Carta adicionada à coleção com sucesso!
+    </div>
+
+<?php elseif (isset($_GET['erro']) && $_GET['erro'] === 'campo'): ?>
+    <div class="mensagem erro">
+        Preencha todos os campos obrigatórios antes de salvar.
+    </div>
+
+<?php elseif (isset($_GET['erro']) && $_GET['erro'] === 'banco'): ?>
+    <div class="mensagem erro">
+        Ocorreu um erro ao salvar a carta. Tente novamente.
+    </div>
+<?php endif; ?>
+
+
 <!-- Adicionar -->
     <h1>Adicionar a Coleção</h1> 
     <form method="post" action="php/salvar_banco_dados.php">
@@ -81,20 +98,6 @@ function fecharSucesso() {
 
     <button type="submit" class="botao">Adicionar carta</button>
 </form>
-
-<?php if (isset($_GET['sucesso'])): ?>
-<div id="modal-sucesso" class="modal">
-    <div class="modal-box">
-        <button class="fechar" onclick="fecharSucesso()">✖</button>
-
-        
-        <p>A carta foi adicionada à sua coleção.</p>
-
-        <button class="botao" onclick="fecharSucesso()">OK</button>
-    </div>
-</div>
-<?php endif; ?>
-
 
 
 <section id="busca-cartas">
