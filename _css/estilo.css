@@ -238,7 +238,7 @@ footer#rodape p {
 .modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.75);
+    background: rgba(0,0,0,0.6);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -247,34 +247,33 @@ footer#rodape p {
 
 .modal-box {
     background: #202020;
-    padding: 25px;
-    border-radius: 12px;
-    width: 420px;
+    border: 1px solid #d4af37;
+    padding: 20px 30px;
+    border-radius: 10px;
     text-align: center;
+    min-width: 300px;
     position: relative;
 }
 
 .modal-box h2 {
     color: #d4af37;
+    margin-bottom: 10px;
 }
 
 .modal-box p {
     color: #ddd;
-}
-
-.modal-box form {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .modal-box .fechar {
     position: absolute;
-    top: 10px;
-    right: 12px;
+    top: 8px;
+    right: 10px;
     background: none;
     border: none;
     color: #fff;
     font-size: 18px;
     cursor: pointer;
 }
+
+

@@ -44,5 +44,9 @@ $sql->execute([
     $valor
 ]);
 
+header("Location: /mtg_acervo/index.php?sucesso=1");
+exit;
+
+
 header("Location: /mtg_acervo/");
 exit;

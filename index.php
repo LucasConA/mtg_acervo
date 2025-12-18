@@ -6,6 +6,15 @@
     <title>Acervo MTG</title>
 </head>
 
+<script>
+function fecharSucesso() {
+    document.getElementById('modal-sucesso').remove();
+    history.replaceState(null, '', '/mtg_acervo/');
+}
+</script>
+
+
+
 <body>
 <div id="interface">
     <header id="cabecalho"> 
@@ -72,6 +81,21 @@
 
     <button type="submit" class="botao">Adicionar carta</button>
 </form>
+
+<?php if (isset($_GET['sucesso'])): ?>
+<div id="modal-sucesso" class="modal">
+    <div class="modal-box">
+        <button class="fechar" onclick="fecharSucesso()">✖</button>
+
+        
+        <p>A carta foi adicionada à sua coleção.</p>
+
+        <button class="botao" onclick="fecharSucesso()">OK</button>
+    </div>
+</div>
+<?php endif; ?>
+
+
 
 <section id="busca-cartas">
 
