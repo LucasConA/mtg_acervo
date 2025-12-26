@@ -32,6 +32,28 @@ $totalColecao = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
     <p><h1>Nenhuma carta cadastrada ainda.</h1></p>
 <?php else: ?>
 
+<form method="get">
+    <label class="campoTitulo">Ordenar por:</label>
+
+    <select name="ordem" onchange="this.form.submit()">
+        <option value="">Padrão</option>
+        <option value="valor_asc" <?= ($_GET['ordem'] ?? '') === 'valor_asc' ? 'selected' : '' ?>>
+            Menor valor
+        </option>
+        <option value="valor_desc" <?= ($_GET['ordem'] ?? '') === 'valor_desc' ? 'selected' : '' ?>>
+            Maior valor
+        </option>
+        <option value="nome_asc" <?= ($_GET['ordem'] ?? '') === 'nome_asc' ? 'selected' : '' ?>>
+            Nome (A–Z)
+        </option>
+        <option value="nome_desc" <?= ($_GET['ordem'] ?? '') === 'nome_desc' ? 'selected' : '' ?>>
+            Nome (Z–A)
+        </option>
+    </select>
+</form>
+
+
+
 <table id="lista_cartas" border="1" cellpadding="8">
     <thead>
         <tr>
