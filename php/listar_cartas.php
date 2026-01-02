@@ -35,7 +35,7 @@ $sql = $pdo->query("
     SELECT 
         c.id,
         c.nome AS carta,
-        e.nome AS edicao,
+        COALESCE(e.nome_pt, e.nome_en) AS edicao,
         r.nome AS raridade,
         co.nome AS condicao,
         i.nome AS idioma,
