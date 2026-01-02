@@ -1,7 +1,13 @@
 <?php
 require 'conexao.php';
 
-$json = file_get_contents('https://api.scryfall.com/sets');
+$url = 'https://api.scryfall.com/sets';
+$json = file_get_contents($url);
+
+if (!$json) {
+    die('Erro ao acessar a API da Scryfall');
+}
+
 $data = json_decode($json, true);
 
 $stmt = $pdo->prepare("
@@ -13,6 +19,8 @@ $stmt = $pdo->prepare("
         data_lancamento = VALUES(data_lancamento)
 ");
 
+$contador = 0;
+
 foreach ($data['data'] as $set) {
     $stmt->execute([
         strtoupper($set['code']),
@@ -20,6 +28,7 @@ foreach ($data['data'] as $set) {
         $set['set_type'],
         $set['released_at']
     ]);
+    $contador++;
 }
 
-echo "✔ Todas as edições do MTG foram importadas com sucesso!";
+echo "$contador edições importadas/atualizadas com sucesso!";
