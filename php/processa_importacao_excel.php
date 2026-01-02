@@ -1,6 +1,6 @@
 <?php
 require 'conexao.php';
-require  'mtg_acervo\vendor\autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // VERIFICA UPLOAD
@@ -30,8 +30,8 @@ foreach ($linhas as $linha) {
     if ($primeira) { $primeira = false; continue; }
 
     $nome       = $linha['A'];
-    $edicao     = $linha['B'];
-    $raridade   = $linha['C'];
+    $edicoes     = $linha['B'];
+    $raridades   = $linha['C'];
     $condicao   = $linha['D'];
     $idioma     = $linha['E'];
     $tipo       = $linha['F'];
@@ -43,8 +43,8 @@ foreach ($linhas as $linha) {
 
     // BUSCA FK
     $fk = [
-        'edicao'   => buscaId($pdo, 'edicoes', $edicao),
-        'raridade' => buscaId($pdo, 'raridades', $raridade),
+        'edicao'   => buscaId($pdo, 'edicoes', $edicoes),
+        'raridade' => buscaId($pdo, 'raridades', $raridades),
         'condicao' => buscaId($pdo, 'condicao', $condicao),
         'idioma'   => buscaId($pdo, 'idiomas', $idioma),
         'tipo'     => buscaId($pdo, 'tipos', $tipo)
@@ -52,7 +52,7 @@ foreach ($linhas as $linha) {
 
     foreach ($fk as $campo => $valorFK) {
         if ($valorFK === null) {
-            echo "⚠️ Linha ignorada: valor '$$campo' não existe no banco.<br>";
+            echo "Linha ignorada: valor '$$campo' não existe no banco.<br>";
             continue 2;
         }
     }

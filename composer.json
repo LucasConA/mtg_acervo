@@ -1,5 +1,14 @@
 {
     "require": {
-        "phpoffice/phpspreadsheet": "^2.1"
+        "phpoffice/phpspreadsheet": "^1.24",
+        "psr/simple-cache": "^2.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/audit": false
+        },
+        "audit": {
+            "block-insecure": false
+        }
     }
 }

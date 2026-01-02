@@ -101,10 +101,9 @@ function fecharSucesso() {
 
 <h2>Importar cartas via Excel</h2>
 
-<h2>Importar cartas via CSV</h2>
-<form action="php/processa_importacao_csv.php" method="post" enctype="multipart/form-data">
-    <input type="file" name="arquivo" accept=".csv" required>
-    <button type="submit" class="botao">Importar CSV</button>
+<form action="php/processa_importacao_excel.php" method="post" enctype="multipart/form-data">
+    <input type="file" name="arquivo" accept=".xlsx,.xls" required>
+    <button type="submit" class="botao">Importar</button>
 </form>
 
 
