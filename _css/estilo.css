@@ -147,7 +147,7 @@ input[type="radio"] {
 
 /* Tabela coleção */
 #lista_cartas {
-    width: 100%;
+    width: 110%;
     margin-top: 25px;
     table-layout: auto;
     border-collapse: collapse;
