@@ -47,7 +47,8 @@ function fecharSucesso() {
 <!-- Adicionar -->
     <h1>Adicionar a Coleção</h1> 
     <form method="post" action="php/salvar_banco_dados.php">
-    <span class="campoTitulo">Nome:</span> <input type="text" name="nomeCarta" required><br>
+    <span class="campoTitulo">Nome:</span> <input type="text" name="nomeCarta" autocomplete="off" required><div id="autocomplete-list"></div><br>
+
 
     <span class="campoTitulo">Edição:</span>
     <select name="nomeEdicao">
