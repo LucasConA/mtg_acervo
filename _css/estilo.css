@@ -294,3 +294,29 @@ footer#rodape p {
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+
+#preview-importacao {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#preview-importacao th,
+#preview-importacao td {
+    border: 1px solid #333;
+    padding: 6px;
+    text-align: center;
+}
+
+#preview-importacao input,
+#preview-importacao select {
+    width: 100%;
+}
+
+.linha-erro {
+    background-color: #3a1f1f;
+}
+
+.linha-erro td {
+    color: #ffb3b3;
+}

@@ -1,147 +1,234 @@
 <?php
-session_start();
 require 'conexao.php';
 require __DIR__ . '/../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-/* ========= FUNÇÕES ========= */
+/* ===============================
+   FUNÇÕES
+================================ */
 
-function buscaId(PDO $pdo, string $tabela, string $valor) {
-    $sql = $pdo->prepare("SELECT id FROM $tabela WHERE nome = ?");
+function buscarId(PDO $pdo, string $tabela, string $campo, string $valor) {
+    $sql = $pdo->prepare("SELECT id FROM $tabela WHERE $campo = ?");
     $sql->execute([trim($valor)]);
     return $sql->fetchColumn() ?: null;
 }
 
-function buscaEdicaoInteligente(PDO $pdo, string $valor) {
-    $valor = trim($valor);
-    if ($valor === '') return null;
-
-    $sql = $pdo->prepare("SELECT id FROM edicoes WHERE codigo = ?");
-    $sql->execute([$valor]);
-    if ($id = $sql->fetchColumn()) return $id;
-
-    $sql = $pdo->prepare("SELECT id FROM edicoes WHERE nome_pt = ?");
-    $sql->execute([$valor]);
-    if ($id = $sql->fetchColumn()) return $id;
-
-    $sql = $pdo->prepare("SELECT id FROM edicoes WHERE nome_en = ?");
-    $sql->execute([$valor]);
-    if ($id = $sql->fetchColumn()) return $id;
-
-    return null;
+function buscarEdicao(PDO $pdo, string $valor) {
+    $sql = $pdo->prepare("
+        SELECT id
+        FROM edicoes
+        WHERE nome_pt = ? OR nome_en = ?
+    ");
+    $sql->execute([$valor, $valor]);
+    return $sql->fetchColumn() ?: null;
 }
 
-/* ========= UPLOAD ========= */
+function carregarEdicoes(PDO $pdo) {
+    return $pdo->query("
+        SELECT id, COALESCE(nome_pt, nome_en) AS nome
+        FROM edicoes
+        ORDER BY nome
+    ")->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function carregarTabela(PDO $pdo, string $tabela) {
+    return $pdo->query("
+        SELECT id, nome
+        FROM $tabela
+        ORDER BY nome
+    ")->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/* ===============================
+   UPLOAD
+================================ */
 
 if (!isset($_FILES['arquivo']) || $_FILES['arquivo']['error'] !== 0) {
-    die("Erro no upload.");
+    die("Arquivo inválido.");
 }
 
 $planilha = IOFactory::load($_FILES['arquivo']['tmp_name']);
-$sheet = $planilha->getActiveSheet();
-$linhas = $sheet->toArray(null, true, true, true);
+$linhas   = $planilha->getActiveSheet()->toArray(null, true, true, true);
+
+/* ===============================
+   DROPDOWNS
+================================ */
+
+$edicoes   = carregarEdicoes($pdo);
+$raridades = carregarTabela($pdo, 'raridades');
+$condicoes = carregarTabela($pdo, 'condicao');
+$idiomas   = carregarTabela($pdo, 'idiomas');
+$tipos     = carregarTabela($pdo, 'tipos');
+
+/* ===============================
+   PROCESSAMENTO
+================================ */
 
 $preview = [];
-$erros = [];
+$errosGlobais = [];
+$linhaNum = 1;
 
-/* ========= LEITURA ========= */
+foreach ($linhas as $linha) {
 
-foreach ($linhas as $i => $linha) {
+    $nome = trim($linha['A'] ?? '');
+    if ($nome === '') { $linhaNum++; continue; }
 
-    $nome       = trim($linha['A']);
-    $edicaoTxt  = trim($linha['B']);
-    $raridade   = trim($linha['C']);
-    $condicao   = trim($linha['D']);
-    $idioma     = trim($linha['E']);
-    $tipo       = trim($linha['F']);
-    $foil       = strtolower(trim($linha['G'])) === 'foil' ? 1 : 0;
-    $quantidade = (int)$linha['H'];
-    $valor      = (float) str_replace(',', '.', $linha['I']);
+    $edicaoTxt = trim($linha['B'] ?? '');
+    $rarTxt    = trim($linha['C'] ?? '');
+    $condTxt   = trim($linha['D'] ?? '');
+    $idiTxt    = trim($linha['E'] ?? '');
+    $tipoTxt   = trim($linha['F'] ?? '');
+    $foilTxt   = strtolower(trim($linha['G'] ?? 'normal'));
+    $qtd       = (int)($linha['H'] ?? 1);
+    $valor     = str_replace(',', '.', $linha['I'] ?? 0);
 
-    if ($nome === '') continue;
+    $idEdicao   = buscarEdicao($pdo, $edicaoTxt);
+    $idRaridade = buscarId($pdo, 'raridades', 'nome', $rarTxt);
+    $idCondicao = buscarId($pdo, 'condicao', 'nome', $condTxt);
+    $idIdioma   = buscarId($pdo, 'idiomas', 'nome', $idiTxt);
+    $idTipo     = buscarId($pdo, 'tipos', 'nome', $tipoTxt);
 
-    $id_edicao   = buscaEdicaoInteligente($pdo, $edicaoTxt);
-    $id_raridade = buscaId($pdo, 'raridades', $raridade);
-    $id_condicao = buscaId($pdo, 'condicao', $condicao);
-    $id_idioma   = buscaId($pdo, 'idiomas', $idioma);
-    $id_tipo     = buscaId($pdo, 'tipos', $tipo);
+    $erros = [];
+    if (!$idEdicao)   $erros[] = "Edição inválida";
+    if (!$idRaridade) $erros[] = "Raridade inválida";
+    if (!$idCondicao) $erros[] = "Condição inválida";
+    if (!$idIdioma)   $erros[] = "Idioma inválido";
+    if (!$idTipo)     $erros[] = "Tipo inválido";
 
-    if (!$id_edicao || !$id_raridade || !$id_condicao || !$id_idioma || !$id_tipo) {
-        $erros[] = "Linha $i ignorada: $nome (dados inválidos)";
-        continue;
+    if ($erros) {
+        $errosGlobais[] = "Linha $linhaNum: " . implode(', ', $erros);
     }
 
     $preview[] = [
         'nome' => $nome,
-        'id_edicao' => $id_edicao,
-        'id_raridade' => $id_raridade,
-        'id_condicao' => $id_condicao,
-        'id_idioma' => $id_idioma,
-        'id_tipo' => $id_tipo,
-        'foil' => $foil,
-        'quantidade' => $quantidade,
-        'valor' => $valor,
-        'edicao_txt' => $edicaoTxt
+        'edicao' => $idEdicao,
+        'raridade' => $idRaridade,
+        'condicao' => $idCondicao,
+        'idioma' => $idIdioma,
+        'tipo' => $idTipo,
+        'foil' => $foilTxt === 'foil' ? 1 : 0,
+        'quantidade' => max(1, $qtd),
+        'valor' => (float)$valor
     ];
+
+    $linhaNum++;
 }
 
-/* guarda para a confirmação */
-$_SESSION['preview_importacao'] = $preview;
+/* ===============================
+   BLOQUEIA SE HÁ ERROS
+================================ */
+
+if ($errosGlobais) {
+    echo "<h2>Erro na importação</h2>";
+    echo "<p>O arquivo contém erros e não pode ser importado.</p>";
+    echo "<ul>";
+    foreach ($errosGlobais as $e) echo "<li>$e</li>";
+    echo "</ul>";
+    echo "<a href='../index.php'>Voltar</a>";
+    exit;
+}
 ?>
 
-
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Preview da Importação</title>
-<style>
-table { width: 100%; border-collapse: collapse; }
-th, td { border: 1px solid #444; padding: 6px; }
-body { background:#121212; color:#fff; font-family:Arial; }
-a, button { padding:10px 15px; background:#333; color:#fff; border:none; cursor:pointer; }
-</style>
+    <meta charset="UTF-8">
+    <title>Preview da Importação</title>
+    <link rel="stylesheet" href="../_css/estilo.css">
 </head>
 <body>
 
-<h2>Preview da Importação</h2>
+<div id="interface">
 
-<?php if ($erros): ?>
-<h3>Linhas ignoradas</h3>
-<ul>
-<?php foreach ($erros as $e): ?>
-<li><?= htmlspecialchars($e) ?></li>
-<?php endforeach; ?>
-</ul>
-<?php endif; ?>
+<header id="cabecalho">
+    <h1>MTG Acervo</h1>
+    <nav id="menu">
+        <ul>
+            <li><a href="../index.php">Voltar</a></li>
+            <li><a href="../colecao.php">Coleção</a></li>
+        </ul>
+    </nav>
+</header>
 
-<table>
+<h1>Preview da Importação</h1>
+
+<form method="post" action="importar_confirmar.php">
+
+<table id="preview-importacao">
 <tr>
     <th>Nome</th>
     <th>Edição</th>
-    <th>Qtd</th>
+    <th>Raridade</th>
+    <th>Condição</th>
+    <th>Idioma</th>
+    <th>Tipo</th>
     <th>Foil</th>
+    <th>Qtd</th>
     <th>Valor</th>
 </tr>
-<?php foreach ($preview as $c): ?>
+
+<?php foreach ($preview as $i => $c): ?>
 <tr>
-    <td><?= htmlspecialchars($c['nome']) ?></td>
-    <td><?= htmlspecialchars($c['edicao_txt']) ?></td>
-    <td><?= $c['quantidade'] ?></td>
-    <td><?= $c['foil'] ? 'Sim' : 'Não' ?></td>
-    <td><?= number_format($c['valor'], 2, ',', '.') ?></td>
+    <td>
+        <input type="text" name="cartas[<?= $i ?>][nome]" value="<?= htmlspecialchars($c['nome']) ?>">
+    </td>
+
+    <td>
+        <select name="cartas[<?= $i ?>][edicao]">
+            <?php foreach ($edicoes as $e): ?>
+                <option value="<?= $e['id'] ?>" <?= $e['id']==$c['edicao']?'selected':'' ?>>
+                    <?= htmlspecialchars($e['nome']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </td>
+
+    <?php
+    $map = [
+        'raridade' => $raridades,
+        'condicao' => $condicoes,
+        'idioma'   => $idiomas,
+        'tipo'     => $tipos
+    ];
+    foreach ($map as $campo => $lista):
+    ?>
+    <td>
+        <select name="cartas[<?= $i ?>][<?= $campo ?>]">
+            <?php foreach ($lista as $op): ?>
+                <option value="<?= $op['id'] ?>" <?= $op['id']==$c[$campo]?'selected':'' ?>>
+                    <?= htmlspecialchars($op['nome']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </td>
+    <?php endforeach; ?>
+
+    <td>
+        <select name="cartas[<?= $i ?>][foil]">
+            <option value="0" <?= !$c['foil']?'selected':'' ?>>Normal</option>
+            <option value="1" <?= $c['foil']?'selected':'' ?>>Foil</option>
+        </select>
+    </td>
+
+    <td>
+        <input type="number" name="cartas[<?= $i ?>][quantidade]" min="1" value="<?= $c['quantidade'] ?>">
+    </td>
+
+    <td>
+        <input type="number" step="0.01" name="cartas[<?= $i ?>][valor]" value="<?= $c['valor'] ?>">
+    </td>
 </tr>
 <?php endforeach; ?>
 </table>
 
-<form method="post" action="importar_confirmar.php">
-    <button type="submit">Confirmar Importação</button>
-    <a href="../index.php">Cancelar</a>
+<br>
+
+<button type="submit" class="botao">Confirmar Importação</button>
+<a href="../index.php" class="botao">Cancelar</a>
+
 </form>
 
+</div>
 </body>
 </html>
-
-
-

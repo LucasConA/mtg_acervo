@@ -101,7 +101,7 @@ function fecharSucesso() {
 
 <h2>Importar cartas via Excel</h2>
 
-<form action="php/processa_importacao_excel.php" method="post" enctype="multipart/form-data">
+<form action="php/importar_preview.php" method="post" enctype="multipart/form-data">
     <input type="file" name="arquivo" accept=".xlsx,.xls" required>
     <button type="submit" class="botao">Importar</button>
 </form>

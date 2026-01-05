@@ -1,33 +1,92 @@
 <?php
-session_start();
 require 'conexao.php';
 
-if (empty($_SESSION['preview_importacao'])) {
-    die("Nada para importar.");
+if (!isset($_POST['cartas']) || !is_array($_POST['cartas'])) {
+    die("Dados inválidos.");
 }
 
-$dados = $_SESSION['preview_importacao'];
+$pdo->beginTransaction();
 
-$insert = $pdo->prepare("
-    INSERT INTO cartas
-    (nome, id_edicao, id_raridade, id_condicao, id_idioma, id_tipo, foil, quantidade, valor)
-    VALUES (?,?,?,?,?,?,?,?,?)
-");
+$inseridas = 0;
+$duplicadas = 0;
 
-foreach ($dados as $c) {
-    $insert->execute([
-        $c['nome'],
-        $c['id_edicao'],
-        $c['id_raridade'],
-        $c['id_condicao'],
-        $c['id_idioma'],
-        $c['id_tipo'],
-        $c['foil'],
-        $c['quantidade'],
-        $c['valor']
-    ]);
+try {
+
+    $check = $pdo->prepare("
+        SELECT id FROM cartas
+        WHERE nome = ?
+          AND id_edicao = ?
+          AND id_idioma = ?
+          AND id_tipo = ?
+          AND foil = ?
+    ");
+
+    $insert = $pdo->prepare("
+        INSERT INTO cartas
+        (nome, id_edicao, id_raridade, id_condicao, id_idioma, id_tipo, foil, quantidade, valor)
+        VALUES (?,?,?,?,?,?,?,?,?)
+    ");
+
+    foreach ($_POST['cartas'] as $c) {
+
+        $check->execute([
+            $c['nome'],
+            $c['edicao'],
+            $c['idioma'],
+            $c['tipo'],
+            $c['foil']
+        ]);
+
+        if ($check->fetch()) {
+            $duplicadas++;
+            continue;
+        }
+
+        $insert->execute([
+            $c['nome'],
+            $c['edicao'],
+            $c['raridade'],
+            $c['condicao'],
+            $c['idioma'],
+            $c['tipo'],
+            $c['foil'],
+            $c['quantidade'],
+            $c['valor']
+        ]);
+
+        $inseridas++;
+    }
+
+    $pdo->commit();
+
+} catch (Exception $e) {
+    $pdo->rollBack();
+    die("Erro na importação: " . $e->getMessage());
 }
+?>
 
-unset($_SESSION['preview_importacao']);
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Importação Finalizada</title>
+    <link rel="stylesheet" href="../_css/estilo.css">
+</head>
+<body>
 
-echo "Importação concluída com sucesso.";
+<div id="interface">
+<h1>Importação Concluída</h1>
+
+<div class="mensagem sucesso">
+    Inseridas: <?= $inseridas ?>
+</div>
+
+<div class="mensagem erro">
+    Duplicadas ignoradas: <?= $duplicadas ?>
+</div>
+
+<a href="../colecao.php" class="botao">Ir para Coleção</a>
+</div>
+
+</body>
+</html>
