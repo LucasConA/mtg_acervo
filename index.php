@@ -47,7 +47,9 @@ function fecharSucesso() {
 <!-- Adicionar -->
     <h1>Adicionar a Coleção</h1> 
     <form method="post" action="php/salvar_banco_dados.php">
-    <span class="campoTitulo">Nome:</span> <input type="text" name="nomeCarta" autocomplete="off" required><div id="autocomplete-list"></div><br>
+    <span class="campoTitulo">Nome:</span> <input type="text" id="nomeCarta" name="nomeCarta" autocomplete="off" required>
+<div id="autocomplete-list"></div>
+<br>
 
 
     <span class="campoTitulo">Edição:</span>
@@ -288,5 +290,58 @@ if (
 
     </footer>
 </div>
+
+<script>
+const input = document.getElementById('nomeCarta');
+const lista = document.getElementById('autocomplete-list');
+let timeout = null;
+
+input.addEventListener('input', function () {
+    clearTimeout(timeout);
+    const termo = this.value.trim();
+    lista.innerHTML = '';
+
+    if (termo.length < 2) return;
+
+    timeout = setTimeout(() => {
+        fetch('php/autocomplete_scryfall.php?q=' + encodeURIComponent(termo))
+            .then(res => res.json())
+            .then(json => {
+                if (!json.data) return;
+
+                json.data.forEach(nome => {
+                    const item = document.createElement('div');
+                    item.textContent = nome;
+                    item.className = 'autocomplete-item';
+
+                    item.onclick = () => {
+                        input.value = nome;
+                        lista.innerHTML = '';
+                        buscarNomePTBR(nome);
+                    };
+
+                    lista.appendChild(item);
+                });
+            });
+    }, 300);
+});
+
+document.addEventListener('click', e => {
+    if (e.target !== input) lista.innerHTML = '';
+});
+</script>
+
+<script>
+function buscarNomePTBR(nomeIngles) {
+    fetch('php/buscar_ptbr_scryfall.php?nome=' + encodeURIComponent(nomeIngles))
+        .then(res => res.json())
+        .then(dados => {
+            if (dados.nome) {
+                document.getElementById('nomeCarta').value = dados.nome;
+            }
+        });
+}
+</script>
+
 </body>
 </html>
