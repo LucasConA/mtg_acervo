@@ -147,9 +147,8 @@ input[type="radio"] {
 
 /* Tabela coleção */
 #lista_cartas {
-    width: 110%;
+    width: 100%;
     margin-top: 25px;
-    table-layout: auto;
     border-collapse: collapse;
     background-color: #1e1e1e;
 }
@@ -169,6 +168,12 @@ input[type="radio"] {
 #lista_cartas tr:hover {
     background-color: #2a2a2a;
 }
+
+.tabela-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
 
 /* Busca */
 #busca-cartas {
@@ -339,4 +344,16 @@ footer#rodape p {
 .autocomplete-item:hover {
     background-color: #d4af37;
     color: #202020;
+}
+
+.acoes {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.acoes form {
+    margin: 0;
 }

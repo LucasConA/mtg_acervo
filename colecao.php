@@ -42,6 +42,7 @@ $ordem = $_GET['ordem'] ?? null;
     </select>
 </form>
 
+<div class="tabela-container">
 <table id="lista_cartas" border="1" cellpadding="8">
     <thead>
         <tr>
@@ -71,6 +72,7 @@ $ordem = $_GET['ordem'] ?? null;
             <td><?= (int)$carta['quantidade'] ?></td>
             <td><?= number_format($carta['valor'], 2, ',', '.') ?></td>
             <td>
+                <div class="acoes">
                 <a href="/mtg_acervo/editar_carta.php?id=<?= (int)$carta['id'] ?>" class="botao">
                     Editar
                 </a>
@@ -82,8 +84,9 @@ $ordem = $_GET['ordem'] ?? null;
                     onsubmit="return confirm('Tem certeza que deseja excluir esta carta?');"
                 >
                     <input type="hidden" name="id" value="<?= (int)$carta['id'] ?>">
-                    <button type="submit" class="botao">Excluir</button>
+                    <button type="submit" class="botao botao-perigo">Excluir</button>
                 </form>
+                </div>
             </td>
         </tr>
     <?php endforeach; ?>
@@ -100,7 +103,7 @@ $ordem = $_GET['ordem'] ?? null;
         </tr>
     </tfoot>
 </table>
-
+</div>
 <?php endif; ?>
 
 </main>
