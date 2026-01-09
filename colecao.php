@@ -1,13 +1,10 @@
 <?php
-include "php/listar_cartas.php";
+require_once __DIR__ . '/php/listar_cartas.php';
 
-require 'php/conexao.php';
+$ordem = $_GET['ordem'] ?? null;
 
-$stmtTotal = $pdo->query("SELECT SUM(valor * quantidade) AS total FROM cartas");
-$totalColecao = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+[$cartas, $totalColecao] = listarCartas($ordem);
 ?>
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -15,12 +12,13 @@ $totalColecao = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
     <title>Minha Coleção - Acervo MTG</title>
     <link rel="stylesheet" href="_css/estilo.css">
 </head>
-<body>
 
+<body>
 <div id="interface">
 
 <header id="cabecalho">
     <h1>Minha Coleção</h1>
+
     <nav id="menu">
         <a href="/mtg_acervo/" class="botao">Adicionar Carta</a>
     </nav>
@@ -28,8 +26,8 @@ $totalColecao = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
 <main>
 
-<?php if (count($cartas) == 0): ?>
-    <p><h1>Nenhuma carta cadastrada ainda.</h1></p>
+<?php if (empty($cartas)): ?>
+    <h2>Nenhuma carta cadastrada ainda.</h2>
 <?php else: ?>
 
 <form method="get">
@@ -37,22 +35,12 @@ $totalColecao = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
     <select name="ordem" onchange="this.form.submit()">
         <option value="">Padrão</option>
-        <option value="valor_asc" <?= ($_GET['ordem'] ?? '') === 'valor_asc' ? 'selected' : '' ?>>
-            Menor valor
-        </option>
-        <option value="valor_desc" <?= ($_GET['ordem'] ?? '') === 'valor_desc' ? 'selected' : '' ?>>
-            Maior valor
-        </option>
-        <option value="nome_asc" <?= ($_GET['ordem'] ?? '') === 'nome_asc' ? 'selected' : '' ?>>
-            Nome (A–Z)
-        </option>
-        <option value="nome_desc" <?= ($_GET['ordem'] ?? '') === 'nome_desc' ? 'selected' : '' ?>>
-            Nome (Z–A)
-        </option>
+        <option value="valor_asc" <?= $ordem === 'valor_asc' ? 'selected' : '' ?>>Menor valor</option>
+        <option value="valor_desc" <?= $ordem === 'valor_desc' ? 'selected' : '' ?>>Maior valor</option>
+        <option value="nome_asc" <?= $ordem === 'nome_asc' ? 'selected' : '' ?>>Nome (A–Z)</option>
+        <option value="nome_desc" <?= $ordem === 'nome_desc' ? 'selected' : '' ?>>Nome (Z–A)</option>
     </select>
 </form>
-
-
 
 <table id="lista_cartas" border="1" cellpadding="8">
     <thead>
@@ -71,54 +59,51 @@ $totalColecao = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
     </thead>
 
     <tbody>
-        <?php foreach ($cartas as $carta): ?>
+    <?php foreach ($cartas as $carta): ?>
         <tr>
             <td><?= htmlspecialchars($carta['carta']) ?></td>
-            <td><?= $carta['edicao'] ?></td>
-            <td><?= $carta['raridade'] ?></td>
-            <td><?= $carta['condicao'] ?></td>
-            <td><?= $carta['idioma'] ?></td>
-            <td><?= $carta['tipo'] ?></td>
+            <td><?= htmlspecialchars($carta['edicao']) ?></td>
+            <td><?= htmlspecialchars($carta['raridade']) ?></td>
+            <td><?= htmlspecialchars($carta['condicao']) ?></td>
+            <td><?= htmlspecialchars($carta['idioma']) ?></td>
+            <td><?= htmlspecialchars($carta['tipo']) ?></td>
             <td><?= $carta['foil'] ? 'Sim' : 'Não' ?></td>
-            <td><?= $carta['quantidade'] ?></td>
+            <td><?= (int)$carta['quantidade'] ?></td>
             <td><?= number_format($carta['valor'], 2, ',', '.') ?></td>
             <td>
-        </a>
-            <a href="/mtg_acervo/editar_carta.php?id=<?= $carta['id'] ?>" class="botao">Editar</a>
+                <a href="/mtg_acervo/editar_carta.php?id=<?= (int)$carta['id'] ?>" class="botao">
+                    Editar
+                </a>
 
-            <form action="/mtg_acervo/php/excluir_carta.php"
-                      method="post"
-                      style="display:inline"
-                      onsubmit="return confirm('Tem certeza que deseja excluir esta carta?');">
-
-                    <input type="hidden" name="id" value="<?= $carta['id'] ?>">
-                    <button type="submit" class="botao">Excluir
-            </form>
-        </td>
-        
-    </tr>
+                <form
+                    action="/mtg_acervo/php/excluir_carta.php"
+                    method="post"
+                    style="display:inline"
+                    onsubmit="return confirm('Tem certeza que deseja excluir esta carta?');"
+                >
+                    <input type="hidden" name="id" value="<?= (int)$carta['id'] ?>">
+                    <button type="submit" class="botao">Excluir</button>
+                </form>
+            </td>
+        </tr>
     <?php endforeach; ?>
     </tbody>
+
     <tfoot>
-    <tr>
-        <td colspan="8" style="text-align:right; font-weight:bold; color:#d4af37;">
-            Valor total da coleção
-        </td>
-        <td colspan="2" style="font-weight:bold; color:#ffffff;">
-            R$ <?= number_format($totalColecao, 2, ',', '.') ?>
-        </td>
-    </tr>
+        <tr>
+            <td colspan="8" style="text-align:right; font-weight:bold; color:#d4af37;">
+                Valor total da coleção
+            </td>
+            <td colspan="2" style="font-weight:bold;">
+                R$ <?= number_format($totalColecao, 2, ',', '.') ?>
+            </td>
+        </tr>
     </tfoot>
-
-    
 </table>
-
 
 <?php endif; ?>
 
 </main>
-
 </div>
-
 </body>
 </html>

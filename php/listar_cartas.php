@@ -1,55 +1,53 @@
 <?php
-require "conexao.php";
+require_once __DIR__ . '/conexao.php';
 
-/*
-  Este arquivo é responsável APENAS por:
-  - Buscar as cartas no banco
-  - Resolver os JOINs
-  - Entregar os dados prontos em $cartas
-*/
+/**
+ * Lista cartas da coleção com ordenação opcional
+ *
+ * @param string|null $ordem
+ * @return array{0: array, 1: float}
+ */
+function listarCartas(?string $ordem): array
+{
+    global $pdo;
 
-// Define ordenação padrão
-$orderBy = "c.nome ASC";
+    $orderBy = match ($ordem) {
+        'valor_asc'  => 'cartas.valor ASC',
+        'valor_desc' => 'cartas.valor DESC',
+        'nome_asc'   => 'cartas.nome ASC',
+        'nome_desc'  => 'cartas.nome DESC',
+        default      => 'cartas.nome ASC',
+    };
 
-if (!empty($_GET['ordem'])) {
-    switch ($_GET['ordem']) {
-        case 'nome_asc':
-            $orderBy = "c.nome ASC";
-            break;
+    $sql = "
+        SELECT
+            cartas.id,
+            cartas.nome AS carta,
+            COALESCE(edicoes.nome_pt, edicoes.nome_en) AS edicao,
+            raridades.nome AS raridade,
+            condicao.nome AS condicao,
+            idiomas.nome AS idioma,
+            tipos.nome AS tipo,
+            cartas.foil,
+            cartas.quantidade,
+            cartas.valor
+        FROM cartas
+        JOIN edicoes ON cartas.id_edicao = edicoes.id
+        JOIN raridades ON cartas.id_raridade = raridades.id
+        JOIN condicao ON cartas.id_condicao = condicao.id
+        JOIN idiomas ON cartas.id_idioma = idiomas.id
+        JOIN tipos ON cartas.id_tipo = tipos.id
+        ORDER BY $orderBy
+    ";
 
-        case 'nome_desc':
-            $orderBy = "c.nome DESC";
-            break;
+    $stmt = $pdo->query($sql);
+    $cartas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        case 'valor_asc':
-            $orderBy = "c.valor ASC";
-            break;
+    $stmtTotal = $pdo->query("
+        SELECT SUM(valor * quantidade) FROM cartas
+    ");
 
-        case 'valor_desc':
-            $orderBy = "c.valor DESC";
-            break;
-    }
+    $total = $stmtTotal->fetchColumn() ?? 0;
+
+    return [$cartas, $total];
 }
-
-$sql = $pdo->query("
-    SELECT 
-        c.id,
-        c.nome AS carta,
-        COALESCE(e.nome_pt, e.nome_en) AS edicao,
-        r.nome AS raridade,
-        co.nome AS condicao,
-        i.nome AS idioma,
-        t.nome AS tipo,
-        c.foil,
-        c.quantidade,
-        c.valor
-    FROM cartas c
-    INNER JOIN edicoes   e  ON c.id_edicao   = e.id
-    INNER JOIN raridades r  ON c.id_raridade = r.id
-    INNER JOIN condicao  co ON c.id_condicao = co.id
-    INNER JOIN idiomas   i  ON c.id_idioma   = i.id
-    INNER JOIN tipos     t  ON c.id_tipo     = t.id
-    ORDER BY $orderBy
-");
-
-$cartas = $sql->fetchAll(PDO::FETCH_ASSOC);

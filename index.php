@@ -49,7 +49,7 @@ if (array_filter($filtros)) {
 
 </div>
 
-<script src="_js/autocomplete.js"></script>
-<script src="_js/buscar_ptbr.js"></script>
+<script src="_js/autocomplete.js" defer></script>
+<script src="_js/buscar_ptbr.js" defer></script>
 </body>
 </html>
