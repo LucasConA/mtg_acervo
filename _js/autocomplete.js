@@ -1,11 +1,18 @@
-const input = document.getElementById('nomeCarta');
-const lista = document.getElementById('autocomplete-list');
-let timeout = null;
+document.addEventListener('DOMContentLoaded', () => {
 
-if (input) {
-    input.addEventListener('input', () => {
+    const input = document.getElementById('nomeCarta');
+    const lista = document.getElementById('autocomplete-list');
+    let timeout = null;
+
+    if (!input || !lista) {
+        console.warn('Autocomplete: elementos não encontrados');
+        return;
+    }
+
+    input.addEventListener('input', function () {
         clearTimeout(timeout);
-        const termo = input.value.trim();
+
+        const termo = this.value.trim();
         lista.innerHTML = '';
 
         if (termo.length < 2) return;
@@ -14,19 +21,29 @@ if (input) {
             fetch('php/autocomplete_scryfall.php?q=' + encodeURIComponent(termo))
                 .then(res => res.json())
                 .then(json => {
-                    if (!json.data) return;
+                    if (!json || !json.data) return;
 
                     json.data.forEach(nome => {
                         const item = document.createElement('div');
+                        item.className = 'autocomplete-item';
                         item.textContent = nome;
-                        item.onclick = () => {
+
+                        item.addEventListener('click', () => {
                             input.value = nome;
                             lista.innerHTML = '';
-                            buscarNomePTBR(nome);
-                        };
+                        });
+
                         lista.appendChild(item);
                     });
-                });
+                })
+                .catch(err => console.error('Erro autocomplete:', err));
         }, 300);
     });
-}
+
+    document.addEventListener('click', e => {
+        if (e.target !== input) {
+            lista.innerHTML = '';
+        }
+    });
+
+});
