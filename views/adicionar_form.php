@@ -1,40 +1,45 @@
-<h1>Adicionar à Coleção</h1>
+<section id="adicionar-cartas">
 
-<form method="post" action="php/salvar_banco_dados.php" autocomplete="off">
+<h2>Adicionar à coleção</h2>
+
+<form method="post" action="php/salvar_banco_dados.php">
 
     <span class="campoTitulo">Nome:</span>
-    <input type="text"
-           id="nomeCarta"
-           name="nomeCarta"
-           required>
-
+    <input
+        type="text"
+        id="nomeCarta"
+        name="nomeCarta"
+        autocomplete="off"
+        required
+    >
     <div id="autocomplete-list"></div>
+    <br>
 
     <span class="campoTitulo">Edição:</span>
     <select name="nomeEdicao" required>
         <option value="">Selecione</option>
         <?php include 'php/carregar_edicoes.php'; ?>
-    </select>
+    </select><br>
 
     <span class="campoTitulo">Raridade:</span>
     <select name="raridade" required>
-        <?php include 'php/carregar_opcoes.php?tabela=raridades'; ?>
-    </select>
+        <?php include 'php/carregar_raridades.php'; ?>
+    </select><br>
 
     <span class="campoTitulo">Condição:</span>
-    <select name="condicao">
-        <?php include 'php/carregar_opcoes.php?tabela=condicao'; ?>
-    </select>
+    <select name="condicao" required>
+        <?php include 'php/carregar_condicoes.php'; ?>
+    </select><br>
 
     <span class="campoTitulo">Idioma:</span>
-    <select name="idioma">
-        <?php include 'php/carregar_opcoes.php?tabela=idiomas'; ?>
-    </select>
+    <select name="idioma" required>
+        <?php include 'php/carregar_idiomas.php'; ?>
+    </select><br>
 
     <span class="campoTitulo">Tipo:</span>
     <select name="tipo" required>
-        <?php include 'php/carregar_opcoes.php?tabela=tipos'; ?>
-    </select>
+        <?php include 'php/carregar_tipos.php'; ?>
+    </select><br>
 
     <span class="campoTitulo">Foil:</span>
     <div class="radio-grupo">
@@ -49,10 +54,15 @@
     </div>
 
     <span class="campoTitulo">Quantidade:</span>
-    <input type="number" name="quantidade" min="1" value="1">
+    <input type="number" name="quantidade" min="1" value="1"><br>
 
-    <span class="campoTitulo">Valor (R$):</span>
-    <input type="number" name="valorCarta" step="0.01" min="0">
+    <span class="campoTitulo">Valor R$:</span>
+    <input type="number" name="valorCarta" step="0.01" min="0"><br>
 
-    <button type="submit" class="botao">Adicionar carta</button>
+    <button type="submit" class="botao">
+        Adicionar carta
+    </button>
+
 </form>
+
+</section>
