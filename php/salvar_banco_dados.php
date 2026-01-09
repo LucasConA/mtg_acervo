@@ -1,54 +1,67 @@
 <?php
-require "conexao.php";
+declare(strict_types=1);
 
-// Validação básica
-$camposObrigatorios = [
-    'nomeCarta', 'nomeEdicao', 'raridade',
-    'condicao', 'idioma', 'tipo',
-    'valorCarta', 'quantidade'
+require __DIR__ . '/conexao.php';
+
+/**
+ * Campos obrigatórios do formulário
+ */
+$requiredFields = [
+    'nomeCarta',
+    'nomeEdicao',
+    'raridade',
+    'condicao',
+    'idioma',
+    'tipo',
+    'quantidade',
+    'valorCarta',
 ];
 
-foreach ($camposObrigatorios as $campo) {
-    if (!isset($_POST[$campo]) || $_POST[$campo] === '') {
-        // erro simples por enquanto
-        header("Location: /mtg_acervo/index.php?erro=campo");
+foreach ($requiredFields as $field) {
+    if (!isset($_POST[$field]) || trim((string)$_POST[$field]) === '') {
+        header('Location: /mtg_acervo/index.php?erro=campo');
         exit;
     }
 }
 
-$nome       = $_POST['nomeCarta'];
-$edicao     = $_POST['nomeEdicao'];
-$raridade   = $_POST['raridade'];
-$condicao   = $_POST['condicao'];
-$idioma     = $_POST['idioma'];
-$tipo       = $_POST['tipo'];
-$foil       = ($_POST['foil'] ?? 'normal') === 'foil' ? 1 : 0;
-$quantidade = (int) $_POST['quantidade'];
-$valor      = $_POST['valorCarta'];
+/**
+ * Sanitização e tipagem
+ */
+$nome       = trim($_POST['nomeCarta']);
+$edicao     = (int) $_POST['nomeEdicao'];
+$raridade   = (int) $_POST['raridade'];
+$condicao   = (int) $_POST['condicao'];
+$idioma     = (int) $_POST['idioma'];
+$tipo       = (int) $_POST['tipo'];
+$quantidade = max(1, (int) $_POST['quantidade']);
+$valor      = (float) $_POST['valorCarta'];
+$foil       = isset($_POST['foil']) ? (int) $_POST['foil'] : 0;
 
 try {
-    $sql = $pdo->prepare("
-        INSERT INTO cartas
+    $stmt = $pdo->prepare(
+        'INSERT INTO cartas
         (nome, id_edicao, id_raridade, id_condicao, id_idioma, id_tipo, foil, quantidade, valor)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ");
+        VALUES
+        (:nome, :edicao, :raridade, :condicao, :idioma, :tipo, :foil, :quantidade, :valor)'
+    );
 
-    $sql->execute([
-        $nome,
-        $edicao,
-        $raridade,
-        $condicao,
-        $idioma,
-        $tipo,
-        $foil,
-        $quantidade,
-        $valor
+    $stmt->execute([
+        ':nome'       => $nome,
+        ':edicao'     => $edicao,
+        ':raridade'   => $raridade,
+        ':condicao'   => $condicao,
+        ':idioma'     => $idioma,
+        ':tipo'       => $tipo,
+        ':foil'       => $foil,
+        ':quantidade' => $quantidade,
+        ':valor'      => $valor,
     ]);
 
-    header("Location: /mtg_acervo/index.php?sucesso=1");
+    header('Location: /mtg_acervo/index.php?sucesso=1');
     exit;
 
 } catch (PDOException $e) {
-    header("Location: /mtg_acervo/index.php?erro=banco");
+    // em produção: logar erro
+    header('Location: /mtg_acervo/index.php?erro=banco');
     exit;
 }

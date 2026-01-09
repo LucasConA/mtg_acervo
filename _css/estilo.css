@@ -357,3 +357,23 @@ footer#rodape p {
 .acoes form {
     margin: 0;
 }
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal-box {
+    background: #202020;
+    border: 1px solid #d4af37;
+    padding: 20px 30px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 300px;
+    position: relative;
+}

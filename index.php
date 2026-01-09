@@ -30,6 +30,33 @@ if (array_filter($filtros)) {
 <header id="cabecalho">
     <h1>Acervo MTG</h1>
 
+    <?php
+$mensagem = null;
+$tipo = null;
+
+if (isset($_GET['sucesso'])) {
+    $mensagem = 'A carta foi adicionada à sua coleção com sucesso.';
+    $tipo = 'sucesso';
+}
+
+if (isset($_GET['erro'])) {
+    $mensagem = 'Ocorreu um erro ao salvar a carta. Tente novamente.';
+    $tipo = 'erro';
+}
+?>
+
+<?php if ($mensagem): ?>
+<div class="modal" id="modal-feedback">
+    <div class="modal-box">
+        <button class="fechar" onclick="fecharModal()">×</button>
+        <h2><?= $tipo === 'sucesso' ? 'Sucesso' : 'Erro' ?></h2>
+        <p><?= $mensagem ?></p>
+        <button class="botao" onclick="fecharModal()">OK</button>
+    </div>
+</div>
+<?php endif; ?>
+
+
     <nav id="menu">
         <ul>
             <li>
@@ -53,3 +80,5 @@ if (array_filter($filtros)) {
 <script src="_js/buscar_ptbr.js" defer></script>
 </body>
 </html>
+
+<script src="_js/modal.js"></script>
