@@ -1,26 +1,24 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-require 'php/conexao.php';
+require_once 'php/repositorios/CartaRepository.php';
+require_once 'php/repositorios/SelectRepository.php';
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
 if (!$id) {
-    die("ID inválido");
+    die('ID inválido');
 }
 
-// Busca da carta
-$sql = "SELECT * FROM cartas WHERE id = ?";
-$stmt = $pdo->prepare($sql);
-$stmt->execute([$id]);
-$carta = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$carta) {
-    die("Carta não encontrada");
+try {
+    $carta = buscarCartaPorId($id);
+} catch (RuntimeException $e) {
+    die($e->getMessage());
 }
+
+$edicoes   = listarOpcoes('edicoes');
+$raridades = listarOpcoes('raridades');
+$condicoes = listarOpcoes('condicao');
+$idiomas   = listarOpcoes('idiomas');
+$tipos     = listarOpcoes('tipos');
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -35,110 +33,68 @@ if (!$carta) {
 <header id="cabecalho">
     <h1>Editar Carta</h1>
     <nav id="menu">
-        <ul>
-            <li><a href="/mtg_acervo/colecao.php" class="botao">Voltar</a></li>
-        </ul>
+        <a href="/mtg_acervo/colecao.php" class="botao">Voltar</a>
     </nav>
 </header>
 
 <form method="post" action="php/update_carta.php">
 
-    <input type="hidden" name="id" value="<?= $carta['id'] ?>">
+<input type="hidden" name="id" value="<?= $carta['id'] ?>">
 
-    <span class="campoTitulo">Nome:</span>
-    <input type="text" name="nomeCarta"
-           value="<?= htmlspecialchars($carta['nome']) ?>" required><br>
+<span class="campoTitulo">Nome:</span>
+<input type="text" name="nomeCarta"
+       value="<?= htmlspecialchars($carta['nome']) ?>" required><br>
 
-    <span class="campoTitulo">Edição:</span>
-    <select name="nomeEdicao" required>
-        <?php
-        $edicoes = $pdo->query("SELECT * FROM edicoes ORDER BY id")->fetchAll();
-        foreach ($edicoes as $e):
-        ?>
-            <option value="<?= $e['id'] ?>"
-                <?= $e['id'] == $carta['id_edicao'] ? 'selected' : '' ?>>
-                <?= $e['nome'] ?>
-            </option>
-        <?php endforeach; ?>
-    </select><br>
+<?php
+function renderSelect(string $name, array $opcoes, int $selecionado)
+{
+    echo "<select name='{$name}' required>";
+    foreach ($opcoes as $opcao) {
+        $selected = $opcao['id'] === $selecionado ? 'selected' : '';
+        echo "<option value='{$opcao['id']}' {$selected}>{$opcao['nome']}</option>";
+    }
+    echo "</select><br>";
+}
+?>
 
-    <span class="campoTitulo">Raridade:</span>
-    <select name="raridade" required>
-        <?php
-        $raridades = $pdo->query("SELECT * FROM raridades ORDER BY id")->fetchAll();
-        foreach ($raridades as $r):
-        ?>
-            <option value="<?= $r['id'] ?>"
-                <?= $r['id'] == $carta['id_raridade'] ? 'selected' : '' ?>>
-                <?= $r['nome'] ?>
-            </option>
-        <?php endforeach; ?>
-    </select><br>
+<span class="campoTitulo">Edição:</span>
+<?php renderSelect('id_edicao', $edicoes, $carta['id_edicao']); ?>
 
-    <span class="campoTitulo">Condição:</span>
-    <select name="condicao">
-        <?php
-        $condicoes = $pdo->query("SELECT * FROM condicao ORDER BY id")->fetchAll();
-        foreach ($condicoes as $c):
-        ?>
-            <option value="<?= $c['id'] ?>"
-                <?= $c['id'] == $carta['id_condicao'] ? 'selected' : '' ?>>
-                <?= $c['nome'] ?>
-            </option>
-        <?php endforeach; ?>
-    </select><br>
+<span class="campoTitulo">Raridade:</span>
+<?php renderSelect('id_raridade', $raridades, $carta['id_raridade']); ?>
 
-    <span class="campoTitulo">Idioma:</span>
-    <select name="idioma">
-        <?php
-        $idiomas = $pdo->query("SELECT * FROM idiomas ORDER BY id")->fetchAll();
-        foreach ($idiomas as $i):
-        ?>
-            <option value="<?= $i['id'] ?>"
-                <?= $i['id'] == $carta['id_idioma'] ? 'selected' : '' ?>>
-                <?= $i['nome'] ?>
-            </option>
-        <?php endforeach; ?>
-    </select><br>
+<span class="campoTitulo">Condição:</span>
+<?php renderSelect('id_condicao', $condicoes, $carta['id_condicao']); ?>
 
-    <span class="campoTitulo">Tipo:</span>
-    <select name="tipo" required>
-        <?php
-        $tipos = $pdo->query("SELECT * FROM tipos ORDER BY id")->fetchAll();
-        foreach ($tipos as $t):
-        ?>
-            <option value="<?= $t['id'] ?>"
-                <?= $t['id'] == $carta['id_tipo'] ? 'selected' : '' ?>>
-                <?= $t['nome'] ?>
-            </option>
-        <?php endforeach; ?>
-    </select><br>
+<span class="campoTitulo">Idioma:</span>
+<?php renderSelect('id_idioma', $idiomas, $carta['id_idioma']); ?>
 
-    <div class="radio-grupo">
-        <label>
-            <input type="radio" name="foil" value="normal" checked>
-            Normal
-        </label>
+<span class="campoTitulo">Tipo:</span>
+<?php renderSelect('id_tipo', $tipos, $carta['id_tipo']); ?>
 
-        <label>
-            <input type="radio" name="foil" value="foil">
-            Foil
-        </label>
-    </div>
+<div class="radio-grupo">
+    <label>
+        <input type="radio" name="foil" value="0" <?= !$carta['foil'] ? 'checked' : '' ?>>
+        Normal
+    </label>
+    <label>
+        <input type="radio" name="foil" value="1" <?= $carta['foil'] ? 'checked' : '' ?>>
+        Foil
+    </label>
+</div>
 
-    <span class="campoTitulo">Quantidade:</span>
-    <input type="number" name="quantidade" min="1"
+<span class="campoTitulo">Quantidade:</span>
+<input type="number" name="quantidade" min="1"
        value="<?= $carta['quantidade'] ?>"><br>
 
-    <span class="campoTitulo">Valor R$:</span>
-    <input type="number" name="valorCarta" step="0.01" min="0"
-           value="<?= $carta['valor'] ?>"><br>
+<span class="campoTitulo">Valor R$:</span>
+<input type="number" name="valorCarta" step="0.01" min="0"
+       value="<?= $carta['valor'] ?>"><br>
 
-    <button type="submit" class="botao">Salvar Alterações</button>
+<button type="submit" class="botao">Salvar Alterações</button>
 
 </form>
 
 </div>
-
 </body>
 </html>
