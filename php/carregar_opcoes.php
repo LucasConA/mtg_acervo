@@ -4,16 +4,22 @@ declare(strict_types=1);
 require __DIR__ . '/conexao.php';
 
 /**
- * Prioriza nome em português, com fallback para inglês
+ * Tabelas permitidas para carregamento genérico
  */
-$sql = "
-    SELECT 
-        id,
-        COALESCE(nome_pt, nome_en) AS nome
-    FROM edicoes
-    ORDER BY id
-";
+$permitidas = [
+    'condicao',
+    'idiomas',
+    'tipos',
+    'raridades'
+];
 
+$tabela = $_GET['tabela'] ?? '';
+
+if (!in_array($tabela, $permitidas, true)) {
+    exit;
+}
+
+$sql = "SELECT id, nome FROM {$tabela} ORDER BY id";
 $stmt = $pdo->query($sql);
 
 while ($linha = $stmt->fetch(PDO::FETCH_ASSOC)) {

@@ -1,8 +1,19 @@
 <?php
-require "conexao.php";
+require 'conexao.php';
 
-$sql = $pdo->query("SELECT id, nome FROM condicao ORDER BY id");
-while ($linha = $sql->fetch(PDO::FETCH_ASSOC)) {
-    echo "<option value='{$linha['id']}'>{$linha['nome']}</option>";
+function listarCondicoes(PDO $pdo): array
+{
+    $stmt = $pdo->query("
+        SELECT id, nome
+        FROM condicao
+        ORDER BY id
+    ");
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-?>
+
+foreach (listarCondicoes($pdo) as $condicao): ?>
+    <option value="<?= $condicao['id'] ?>">
+        <?= htmlspecialchars($condicao['nome']) ?>
+    </option>
+<?php endforeach; ?>
