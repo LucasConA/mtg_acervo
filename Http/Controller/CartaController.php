@@ -4,6 +4,7 @@ namespace App\AcervoMtg\Http\Controller;
 use App\AcervoMtg\Application\Service\AtualizarCartaService;
 use App\AcervoMtg\Domain\Entity\Carta;
 use App\AcervoMtg\Infrastructure\Database\CartaRepositoryPDO;
+use App\AcervoMtg\Application\Service\ExcluirCartaService;
 
 class CartaController
 {
@@ -27,5 +28,13 @@ class CartaController
 
         $service->executar($carta);
     }
+
+    public function excluir(int $id): void
+    {
+        $repository = new CartaRepositoryPDO();
+        $service = new ExcluirCartaService($repository);
+        $service->executar($id);
+    }
+
 }
 ?>
