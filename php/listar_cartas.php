@@ -31,7 +31,7 @@ function listarCartas(?string $ordem): array
     $sql = "
         SELECT
             cartas.id,
-            cartas.nome,
+            cartas.nome AS carta,
             COALESCE(edicoes.nome_pt, edicoes.nome_en) AS edicao,
             raridades.nome AS raridade,
             condicao.nome AS condicao,
