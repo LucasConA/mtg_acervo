@@ -94,10 +94,16 @@ class CartaRepositoryPDO implements CartaRepositoryInterface
         $orderBy = match ($ordem) {
             'valor_asc'  => 'valor ASC',
             'valor_desc' => 'valor DESC',
+            'nome_desc'  => 'nome DESC',
             default      => 'nome ASC'
         };
 
-        $stmt = $this->pdo->query("SELECT * FROM cartas ORDER BY $orderBy");
+        $sql = "
+            SELECT * FROM cartas
+            ORDER BY $orderBy
+        ";
+
+        $stmt = $this->pdo->query($sql);
 
         $cartas = [];
         foreach ($stmt->fetchAll() as $row) {
@@ -117,6 +123,7 @@ class CartaRepositoryPDO implements CartaRepositoryInterface
 
         return $cartas;
     }
+
 
     public function existeDuplicada(string $nome, int $edicao, int $idioma, int $tipo, bool $foil): bool
     {

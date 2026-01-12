@@ -1,10 +1,17 @@
 <?php
-require_once __DIR__ . '/php/listar_cartas.php';
+require_once __DIR__ . '/vendor/autoload.php';
+
+use App\AcervoMtg\Http\Controller\CartaController;
 
 $ordem = $_GET['ordem'] ?? null;
 
-[$cartas, $totalColecao] = listarCartas($ordem);
+$controller = new CartaController();
+$resultado = $controller->listar(['ordem' => $ordem]);
+
+$cartas = $resultado['cartas'];
+$totalColecao = $resultado['total'];
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>

@@ -1,20 +1,40 @@
 <?php
-/* --- só executa regra de negócio --- */
 
 namespace App\AcervoMtg\Application\Service;
 
-use App\AcervoMtg\Domain\Entity\Carta;
 use App\AcervoMtg\Domain\Repository\CartaRepositoryInterface;
+use PDO;
 
 class AtualizarCartaService
 {
     public function __construct(
-        private CartaRepositoryInterface $repository
+        private CartaRepositoryInterface $repository,
+        private PDO $pdo
     ) {}
 
-    public function executar(Carta $carta): void
+    public function executar(int $id, array $dados): void
     {
-        $this->repository->atualizar($carta);
+        $this->pdo->beginTransaction();
+
+        try {
+            $carta = $this->repository->buscarPorId($id);
+
+            $carta->nome       = $dados['nome'];
+            $carta->edicao     = $dados['edicao'];
+            $carta->raridade   = $dados['raridade'];
+            $carta->condicao   = $dados['condicao'];
+            $carta->idioma     = $dados['idioma'];
+            $carta->tipo       = $dados['tipo'];
+            $carta->foil       = $dados['foil'];
+            $carta->quantidade = $dados['quantidade'];
+            $carta->valor      = $dados['valor'];
+
+            $this->repository->atualizar($carta);
+
+            $this->pdo->commit();
+        } catch (\Throwable $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
     }
 }
-?>

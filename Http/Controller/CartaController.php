@@ -1,40 +1,101 @@
 <?php
+
 namespace App\AcervoMtg\Http\Controller;
 
 use App\AcervoMtg\Application\Service\AtualizarCartaService;
-use App\AcervoMtg\Domain\Entity\Carta;
-use App\AcervoMtg\Infrastructure\Database\CartaRepositoryPDO;
 use App\AcervoMtg\Application\Service\ExcluirCartaService;
+use App\AcervoMtg\Domain\Repository\CartaRepositoryInterface;
+use App\AcervoMtg\Infrastructure\Repository\CartaRepositoryPDO;
+use App\AcervoMtg\Infrastructure\Database\PDOConnection;
 
 class CartaController
 {
-    public function atualizar(array $post): void
+    private CartaRepositoryInterface $repository;
+
+    public function __construct()
     {
-        $carta = new Carta(
-            id: (int)$post['id'],
-            nome: trim($post['nomeCarta']),
-            edicao: (int)$post['id_edicao'],
-            raridade: (int)$post['id_raridade'],
-            condicao: (int)$post['id_condicao'],
-            idioma: (int)$post['id_idioma'],
-            tipo: (int)$post['id_tipo'],
-            foil: (bool)$post['foil'],
-            quantidade: (int)$post['quantidade'],
-            valor: (float)$post['valorCarta']
+        $this->repository = new CartaRepositoryPDO();
+    }
+
+    /**
+     * Lista cartas da coleção
+     */
+    public function listar(array $params = []): array
+    {
+        $ordem = $params['ordem'] ?? null;
+
+        $cartas = $this->repository->listar($ordem);
+
+        $total = array_reduce(
+            $cartas,
+            fn (float $carry, $carta) =>
+                $carry + ($carta->valor * $carta->quantidade),
+            0.0
         );
 
-        $repository = new CartaRepositoryPDO();
-        $service = new AtualizarCartaService($repository);
-
-        $service->executar($carta);
+        return [
+            'cartas' => array_map(fn ($carta) => [
+                'id'         => $carta->id,
+                'carta'      => $carta->nome,
+                'edicao'     => $carta->edicao,
+                'raridade'   => $carta->raridade,
+                'condicao'   => $carta->condicao,
+                'idioma'     => $carta->idioma,
+                'tipo'       => $carta->tipo,
+                'foil'       => $carta->foil,
+                'quantidade' => $carta->quantidade,
+                'valor'      => $carta->valor,
+            ], $cartas),
+            'total' => $total
+        ];
     }
 
-    public function excluir(int $id): void
-    {
-        $repository = new CartaRepositoryPDO();
-        $service = new ExcluirCartaService($repository);
-        $service->executar($id);
+    public function atualizar(array $post): void
+{
+        $id = filter_var($post['id'] ?? null, FILTER_VALIDATE_INT);
+
+        if (!$id) {
+            throw new \InvalidArgumentException('ID inválido');
+        }
+
+        $dados = [
+            'nome'       => trim($post['nome'] ?? ''),
+            'edicao'     => (int)($post['edicao'] ?? 0),
+            'raridade'   => (int)($post['raridade'] ?? 0),
+            'condicao'   => (int)($post['condicao'] ?? 0),
+            'idioma'     => (int)($post['idioma'] ?? 0),
+            'tipo'       => (int)($post['tipo'] ?? 0),
+            'foil'       => isset($post['foil']),
+            'quantidade' => (int)($post['quantidade'] ?? 0),
+            'valor'      => (float)($post['valor'] ?? 0),
+        ];
+
+        $service = new AtualizarCartaService(
+            $this->repository,
+            PDOConnection::get()
+        );
+
+        $service->executar($id, $dados);
     }
+
+
+    /**
+     * Exclui uma carta
+     */
+    public function excluir(array $post): void
+{
+    $id = filter_var($post['id'] ?? null, FILTER_VALIDATE_INT);
+
+    if (!$id) {
+        throw new \InvalidArgumentException('ID inválido');
+    }
+
+    $service = new ExcluirCartaService(
+        $this->repository,
+        PDOConnection::get()
+    );
+
+    $service->executar($id);
+}
 
 }
-?>
