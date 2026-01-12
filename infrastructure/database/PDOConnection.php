@@ -1,5 +1,5 @@
 <?php
-namespace App\Infrastructure\Database;
+namespace App\AcervoMtg\Infrastructure\Database;
 
 use PDO;
 use PDOException;
