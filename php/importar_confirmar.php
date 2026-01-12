@@ -1,27 +1,29 @@
 <?php
 require 'conexao.php';
 
-if (!isset($_POST['cartas']) || !is_array($_POST['cartas'])) {
+if (empty($_POST['cartas']) || !is_array($_POST['cartas'])) {
     die("Dados inválidos.");
 }
 
 $pdo->beginTransaction();
 
-$inseridas = 0;
+$inseridas  = 0;
 $duplicadas = 0;
 
 try {
 
-    $check = $pdo->prepare("
+    $stmtCheck = $pdo->prepare("
         SELECT id FROM cartas
         WHERE nome = ?
           AND id_edicao = ?
+          AND id_raridade = ?
+          AND id_condicao = ?
           AND id_idioma = ?
           AND id_tipo = ?
           AND foil = ?
     ");
 
-    $insert = $pdo->prepare("
+    $stmtInsert = $pdo->prepare("
         INSERT INTO cartas
         (nome, id_edicao, id_raridade, id_condicao, id_idioma, id_tipo, foil, quantidade, valor)
         VALUES (?,?,?,?,?,?,?,?,?)
@@ -29,29 +31,41 @@ try {
 
     foreach ($_POST['cartas'] as $c) {
 
-        $check->execute([
-            $c['nome'],
-            $c['edicao'],
-            $c['idioma'],
-            $c['tipo'],
-            $c['foil']
+        $nome       = trim($c['nome'] ?? '');
+        $idEdicao   = (int)($c['edicao'] ?? 0);
+        $idRaridade = (int)($c['raridade'] ?? 0);
+        $idCondicao = (int)($c['condicao'] ?? 0);
+        $idIdioma   = (int)($c['idioma'] ?? 0);
+        $idTipo     = (int)($c['tipo'] ?? 0);
+        $foil       = (int)($c['foil'] ?? 0);
+        $quantidade = max(1, (int)($c['quantidade'] ?? 1));
+        $valor      = (float)($c['valor'] ?? 0);
+
+        $stmtCheck->execute([
+            $nome,
+            $idEdicao,
+            $idRaridade,
+            $idCondicao,
+            $idIdioma,
+            $idTipo,
+            $foil
         ]);
 
-        if ($check->fetch()) {
+        if ($stmtCheck->fetchColumn()) {
             $duplicadas++;
             continue;
         }
 
-        $insert->execute([
-            $c['nome'],
-            $c['edicao'],
-            $c['raridade'],
-            $c['condicao'],
-            $c['idioma'],
-            $c['tipo'],
-            $c['foil'],
-            $c['quantidade'],
-            $c['valor']
+        $stmtInsert->execute([
+            $nome,
+            $idEdicao,
+            $idRaridade,
+            $idCondicao,
+            $idIdioma,
+            $idTipo,
+            $foil,
+            $quantidade,
+            $valor
         ]);
 
         $inseridas++;
@@ -59,11 +73,12 @@ try {
 
     $pdo->commit();
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $pdo->rollBack();
     die("Erro na importação: " . $e->getMessage());
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">

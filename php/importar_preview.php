@@ -8,10 +8,16 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
    FUNÇÕES
 ================================ */
 
-function buscarId(PDO $pdo, string $tabela, string $campo, string $valor) {
-    $sql = $pdo->prepare("SELECT id FROM $tabela WHERE $campo = ?");
-    $sql->execute([trim($valor)]);
-    return $sql->fetchColumn() ?: null;
+function buscarId(PDO $pdo, string $tabela, string $valor)
+{
+    $tabelasPermitidas = ['raridades','condicao','idiomas','tipos'];
+    if (!in_array($tabela, $tabelasPermitidas)) {
+        throw new InvalidArgumentException('Tabela inválida');
+    }
+
+    $stmt = $pdo->prepare("SELECT id FROM {$tabela} WHERE nome = ?");
+    $stmt->execute([trim($valor)]);
+    return $stmt->fetchColumn() ?: null;
 }
 
 function buscarEdicao(PDO $pdo, string $valor) {
@@ -84,17 +90,23 @@ foreach ($linhas as $linha) {
     $valor     = str_replace(',', '.', $linha['I'] ?? 0);
 
     $idEdicao   = buscarEdicao($pdo, $edicaoTxt);
-    $idRaridade = buscarId($pdo, 'raridades', 'nome', $rarTxt);
-    $idCondicao = buscarId($pdo, 'condicao', 'nome', $condTxt);
-    $idIdioma   = buscarId($pdo, 'idiomas', 'nome', $idiTxt);
-    $idTipo     = buscarId($pdo, 'tipos', 'nome', $tipoTxt);
+    $idRaridade = buscarId($pdo, 'raridades', $rarTxt);
+    $idCondicao = buscarId($pdo, 'condicao', $condTxt);
+    $idIdioma   = buscarId($pdo, 'idiomas', $idiTxt);
+    $idTipo     = buscarId($pdo, 'tipos', $tipoTxt);
 
     $erros = [];
-    if (!$idEdicao)   $erros[] = "Edição inválida";
-    if (!$idRaridade) $erros[] = "Raridade inválida";
-    if (!$idCondicao) $erros[] = "Condição inválida";
-    if (!$idIdioma)   $erros[] = "Idioma inválido";
-    if (!$idTipo)     $erros[] = "Tipo inválido";
+    $campos = [
+        'Edição'   => $idEdicao,
+        'Raridade' => $idRaridade,
+        'Condição' => $idCondicao,
+        'Idioma'   => $idIdioma,
+        'Tipo'     => $idTipo
+    ];
+
+    foreach ($campos as $nomeCampo => $valorCampo) {
+        if (!$valorCampo) $erros[] = "$nomeCampo inválido";
+    }
 
     if ($erros) {
         $errosGlobais[] = "Linha $linhaNum: " . implode(', ', $erros);
