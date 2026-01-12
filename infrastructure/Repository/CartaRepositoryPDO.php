@@ -1,8 +1,9 @@
 <?php
-namespace App\AcervoMtg\Infrastructure\Database;
+namespace App\AcervoMtg\Infrastructure\Repository;
 
 use App\AcervoMtg\Domain\Entity\Carta;
 use App\AcervoMtg\Domain\Repository\CartaRepositoryInterface;
+use App\AcervoMtg\Infrastructure\Database\PDOConnection;
 use RuntimeException;
 
 class CartaRepositoryPDO implements CartaRepositoryInterface
@@ -116,4 +117,22 @@ class CartaRepositoryPDO implements CartaRepositoryInterface
 
         return $cartas;
     }
+
+    public function existeDuplicada(string $nome, int $edicao, int $idioma, int $tipo, bool $foil): bool
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT id FROM cartas
+            WHERE nome = ?
+            AND id_edicao = ?
+            AND id_idioma = ?
+            AND id_tipo = ?
+            AND foil = ?
+        ");
+
+        $stmt->execute([$nome, $edicao, $idioma, $tipo, $foil ? 1 : 0]);
+
+        return (bool) $stmt->fetch();
+    }
+
 }
+?>
