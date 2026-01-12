@@ -1,12 +1,27 @@
 <?php
-
 require_once __DIR__ . '/../conexao.php';
 
 function buscarCartaPorId(int $id): array
 {
     global $pdo;
 
-    $stmt = $pdo->prepare("SELECT * FROM cartas WHERE id = ?");
+    $sql = "
+        SELECT
+            id,
+            nome,
+            id_edicao,
+            id_raridade,
+            id_condicao,
+            id_idioma,
+            id_tipo,
+            foil,
+            quantidade,
+            valor
+        FROM cartas
+        WHERE id = ?
+    ";
+
+    $stmt = $pdo->prepare($sql);
     $stmt->execute([$id]);
 
     $carta = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -17,3 +32,4 @@ function buscarCartaPorId(int $id): array
 
     return $carta;
 }
+?>
