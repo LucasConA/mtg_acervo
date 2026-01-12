@@ -377,3 +377,7 @@ footer#rodape p {
     min-width: 300px;
     position: relative;
 }
+
+.form-excluir {
+    display: inline-block;
+}

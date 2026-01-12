@@ -1,26 +1,21 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 require 'conexao.php';
 
 $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-
 if (!$id) {
-    die("ID inválido");
+    die('ID inválido');
 }
-// Recebe os dados
-$nome        = $_POST['nomeCarta'] ?? '';
-$id_edicao   = $_POST['nomeEdicao'] ?? null;
-$id_raridade = $_POST['raridade'] ?? null;
-$id_condicao = $_POST['condicao'] ?? null;
-$id_idioma   = $_POST['idioma'] ?? null;
-$id_tipo     = $_POST['tipo'] ?? null;
-$foil        = ($_POST['foil'] === 'foil') ? 1 : 0;
-$valor       = $_POST['valorCarta'] ?? 0;
-$quantidade = $_POST['quantidade'];
 
-// update no banco
+$nome        = trim($_POST['nomeCarta'] ?? '');
+$id_edicao   = (int) ($_POST['id_edicao'] ?? 0);
+$id_raridade = (int) ($_POST['id_raridade'] ?? 0);
+$id_condicao = (int) ($_POST['id_condicao'] ?? 0);
+$id_idioma   = (int) ($_POST['id_idioma'] ?? 0);
+$id_tipo     = (int) ($_POST['id_tipo'] ?? 0);
+$foil        = (int) ($_POST['foil'] ?? 0);
+$quantidade  = (int) ($_POST['quantidade'] ?? 1);
+$valor       = (float) ($_POST['valorCarta'] ?? 0);
+
 $sql = "
     UPDATE cartas SET
         nome = ?,
@@ -49,6 +44,5 @@ $stmt->execute([
     $id
 ]);
 
-// Redireciona para a coleção
-header("Location: /mtg_acervo/colecao.php");
+header("Location: /mtg_acervo/colecao.php?sucesso=update");
 exit;

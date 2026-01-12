@@ -37,13 +37,14 @@ $tipos     = listarOpcoes('tipos');
     </nav>
 </header>
 
-<form method="post" action="php/update_carta.php">
+<form method="post" action="/mtg_acervo/php/update_carta.php">
+
 
 <input type="hidden" name="id" value="<?= $carta['id'] ?>">
 
 <span class="campoTitulo">Nome:</span>
 <input type="text" name="nomeCarta"
-       value="<?= htmlspecialchars($carta['nome']) ?>" required><br>
+       value="<?= htmlspecialchars($carta['nome'] ?? '') ?>" required><br>
 
 <?php
 function renderSelect(string $name, array $opcoes, int $selecionado)
