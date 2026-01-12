@@ -19,10 +19,19 @@ function listarCartas(?string $ordem): array
         default      => 'cartas.nome ASC',
     };
 
+    $baseSql = "
+        FROM cartas
+        JOIN edicoes   ON cartas.id_edicao = edicoes.id
+        JOIN raridades ON cartas.id_raridade = raridades.id
+        JOIN condicao  ON cartas.id_condicao = condicao.id
+        JOIN idiomas   ON cartas.id_idioma = idiomas.id
+        JOIN tipos     ON cartas.id_tipo = tipos.id
+    ";
+
     $sql = "
         SELECT
             cartas.id,
-            cartas.nome AS carta,
+            cartas.nome,
             COALESCE(edicoes.nome_pt, edicoes.nome_en) AS edicao,
             raridades.nome AS raridade,
             condicao.nome AS condicao,
@@ -31,23 +40,14 @@ function listarCartas(?string $ordem): array
             cartas.foil,
             cartas.quantidade,
             cartas.valor
-        FROM cartas
-        JOIN edicoes ON cartas.id_edicao = edicoes.id
-        JOIN raridades ON cartas.id_raridade = raridades.id
-        JOIN condicao ON cartas.id_condicao = condicao.id
-        JOIN idiomas ON cartas.id_idioma = idiomas.id
-        JOIN tipos ON cartas.id_tipo = tipos.id
+        $baseSql
         ORDER BY $orderBy
     ";
 
-    $stmt = $pdo->query($sql);
-    $cartas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $cartas = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmtTotal = $pdo->query("
-        SELECT SUM(valor * quantidade) FROM cartas
-    ");
-
-    $total = $stmtTotal->fetchColumn() ?? 0;
+    $stmtTotal = $pdo->query("SELECT SUM(valor * quantidade) $baseSql");
+    $total = (float) ($stmtTotal->fetchColumn() ?? 0);
 
     return [$cartas, $total];
 }
