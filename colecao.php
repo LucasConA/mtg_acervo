@@ -3,13 +3,14 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use App\AcervoMtg\Http\Controller\CartaController;
 
-$ordem = $_GET['ordem'] ?? null;
-
 $controller = new CartaController();
-$resultado = $controller->listar(['ordem' => $ordem]);
+
+$resultado = $controller->listar($_GET);
 
 $cartas = $resultado['cartas'];
 $totalColecao = $resultado['total'];
+$ordem = $_GET['ordem'] ?? null;
+
 ?>
 
 <!DOCTYPE html>
