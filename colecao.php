@@ -28,7 +28,7 @@ $ordem = $_GET['ordem'] ?? null;
     <h1>Minha Coleção</h1>
 
     <nav id="menu">
-        <a href="/mtg_acervo/" class="botao">Adicionar Carta</a>
+        <a href="/src/AcervoMtg/index.php" class="botao">Adicionar Carta</a>
     </nav>
 </header>
 
@@ -70,7 +70,7 @@ $ordem = $_GET['ordem'] ?? null;
     <tbody>
     <?php foreach ($cartas as $carta): ?>
         <tr>
-            <td><?= htmlspecialchars($carta['carta'] ?? '') ?></td>
+            <td><?= htmlspecialchars($carta['nome'] ?? '') ?></td>
             <td><?= htmlspecialchars($carta['edicao']) ?></td>
             <td><?= htmlspecialchars($carta['raridade']) ?></td>
             <td><?= htmlspecialchars($carta['condicao']) ?></td>
@@ -81,11 +81,11 @@ $ordem = $_GET['ordem'] ?? null;
             <td><?= number_format((float)($carta['valor'] ?? 0), 2, ',', '.') ?></td>
             <td>
                 <div class="acoes">
-                <a href="/mtg_acervo/editar_carta.php?id=<?= (int)$carta['id'] ?>" class="botao">
+                <a href="/src/AcervoMtg/editar_carta.php?id=<?= (int)$carta['id'] ?>" class="botao">
                     Editar
                 </a>
 
-                <form action="/mtg_acervo/php/excluir_carta.php"
+                <form action="/src/AcervoMtg/excluir_carta.php" 
                         method="post"
                         class="form-excluir"
                         onsubmit="return confirm('Tem certeza que deseja excluir esta carta?');">

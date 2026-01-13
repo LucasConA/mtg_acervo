@@ -28,17 +28,18 @@ class CartaRepositoryPDO implements CartaRepositoryInterface
         }
 
         return new Carta(
-            $row['id'],
-            $row['nome'],
-            $row['id_edicao'],
-            $row['id_raridade'],
-            $row['id_condicao'],
-            $row['id_idioma'],
-            $row['id_tipo'],
-            (bool)$row['foil'],
-            $row['quantidade'],
-            (float)$row['valor']
-        );
+            (int) $row['id'],
+            (string) $row['nome'],
+            (int) ($row['id_edicao'] ?? 0),
+            (int) ($row['id_raridade'] ?? 0),
+            (int) ($row['id_condicao'] ?? 0),
+            (int) ($row['id_idioma'] ?? 0),
+            (int) ($row['id_tipo'] ?? 0),
+            (bool) $row['foil'],
+            (int) ($row['quantidade'] ?? 0),
+            (float) ($row['valor'] ?? 0.0)
+);
+
     }
 
     public function salvar(Carta $carta): void
@@ -90,39 +91,40 @@ class CartaRepositoryPDO implements CartaRepositoryInterface
     }
 
     public function listar(?string $ordem = null): array
-    {
-        $orderBy = match ($ordem) {
-            'valor_asc'  => 'valor ASC',
-            'valor_desc' => 'valor DESC',
-            'nome_desc'  => 'nome DESC',
-            default      => 'nome ASC'
-        };
+{
+    $orderBy = match ($ordem) {
+        'valor_asc'  => 'c.valor ASC',
+        'valor_desc' => 'c.valor DESC',
+        'nome_desc'  => 'c.nome DESC',
+        default      => 'c.nome ASC',
+    };
 
-        $sql = "
-            SELECT * FROM cartas
-            ORDER BY $orderBy
-        ";
+    $sql = "
+        SELECT
+            c.id,
+            c.nome,
+            e.nome_pt   AS edicao,
+            r.nome      AS raridade,
+            co.nome     AS condicao,
+            i.nome      AS idioma,
+            t.nome      AS tipo,
+            c.foil,
+            c.quantidade,
+            c.valor
+        FROM cartas c
+        JOIN edicoes   e  ON e.id  = c.id_edicao
+        JOIN raridades r  ON r.id  = c.id_raridade
+        JOIN condicao  co ON co.id = c.id_condicao
+        JOIN idiomas   i  ON i.id  = c.id_idioma
+        JOIN tipos     t  ON t.id  = c.id_tipo
+        ORDER BY {$orderBy}
+    ";
 
-        $stmt = $this->pdo->query($sql);
+    $stmt = $this->pdo->query($sql);
 
-        $cartas = [];
-        foreach ($stmt->fetchAll() as $row) {
-            $cartas[] = new Carta(
-                $row['id'],
-                $row['nome'],
-                $row['id_edicao'],
-                $row['id_raridade'],
-                $row['id_condicao'],
-                $row['id_idioma'],
-                $row['id_tipo'],
-                (bool)$row['foil'],
-                $row['quantidade'],
-                (float)$row['valor']
-            );
-        }
+    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+}
 
-        return $cartas;
-    }
 
 
     public function existeDuplicada(string $nome, int $edicao, int $idioma, int $tipo, bool $foil): bool

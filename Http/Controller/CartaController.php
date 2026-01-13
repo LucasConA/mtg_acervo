@@ -21,34 +21,22 @@ class CartaController
      * Lista cartas da coleção
      */
     public function listar(array $params = []): array
-    {
-        $ordem = $params['ordem'] ?? null;
+{
+    $ordem = $params['ordem'] ?? null;
 
-        $cartas = $this->repository->listar($ordem);
+    $cartas = $this->repository->listar($ordem);
 
-        $total = array_reduce(
-            $cartas,
-            fn (float $carry, $carta) =>
-                $carry + ($carta->valor * $carta->quantidade),
-            0.0
-        );
-
-        return [
-            'cartas' => array_map(fn ($carta) => [
-                'id'         => $carta->id,
-                'carta'      => $carta->nome,
-                'edicao'     => $carta->edicao,
-                'raridade'   => $carta->raridade,
-                'condicao'   => $carta->condicao,
-                'idioma'     => $carta->idioma,
-                'tipo'       => $carta->tipo,
-                'foil'       => $carta->foil,
-                'quantidade' => $carta->quantidade,
-                'valor'      => $carta->valor,
-            ], $cartas),
-            'total' => $total
-        ];
+    $total = 0.0;
+    foreach ($cartas as $carta) {
+        $total += $carta['valor'] * $carta['quantidade'];
     }
+
+    return [
+        'cartas' => $cartas,
+        'total'  => $total
+    ];
+}
+
 
     public function atualizar(array $post): void
 {

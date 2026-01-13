@@ -1,18 +1,17 @@
 <?php
-require 'php/buscar_cartas.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-$filtros = [
-    'nome' => $_GET['busca_nome'] ?? null,
-    'edicao' => $_GET['busca_edicao'] ?? null,
-    'raridade' => $_GET['busca_raridade'] ?? null,
-    'tipo' => $_GET['busca_tipo'] ?? null,
-];
+$mensagem = null;
+$tipo = null;
 
-$cartas = [];
-$totalFiltrado = 0;
+if (isset($_GET['sucesso'])) {
+    $mensagem = 'A carta foi adicionada à sua coleção com sucesso.';
+    $tipo = 'sucesso';
+}
 
-if (array_filter($filtros)) {
-    [$cartas, $totalFiltrado] = buscarCartas($filtros);
+if (isset($_GET['erro'])) {
+    $mensagem = 'Ocorreu um erro ao salvar a carta. Tente novamente.';
+    $tipo = 'erro';
 }
 ?>
 <!DOCTYPE html>
@@ -30,37 +29,21 @@ if (array_filter($filtros)) {
 <header id="cabecalho">
     <h1>Acervo MTG</h1>
 
-    <?php
-$mensagem = null;
-$tipo = null;
-
-if (isset($_GET['sucesso'])) {
-    $mensagem = 'A carta foi adicionada à sua coleção com sucesso.';
-    $tipo = 'sucesso';
-}
-
-if (isset($_GET['erro'])) {
-    $mensagem = 'Ocorreu um erro ao salvar a carta. Tente novamente.';
-    $tipo = 'erro';
-}
-?>
-
-<?php if ($mensagem): ?>
-<div class="modal" id="modal-feedback">
-    <div class="modal-box">
-        <button class="fechar" onclick="fecharModal()">×</button>
-        <h2><?= $tipo === 'sucesso' ? 'Sucesso' : 'Erro' ?></h2>
-        <p><?= $mensagem ?></p>
-        <button class="botao" onclick="fecharModal()">OK</button>
-    </div>
-</div>
-<?php endif; ?>
-
+    <?php if ($mensagem): ?>
+        <div class="modal" id="modal-feedback">
+            <div class="modal-box">
+                <button class="fechar" onclick="fecharModal()">×</button>
+                <h2><?= $tipo === 'sucesso' ? 'Sucesso' : 'Erro' ?></h2>
+                <p><?= htmlspecialchars($mensagem) ?></p>
+                <button class="botao" onclick="fecharModal()">OK</button>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <nav id="menu">
         <ul>
             <li>
-                <a href="/mtg_acervo/colecao.php" class="botao">
+                <a href="/src/AcervoMtg/colecao.php" class="botao">
                     Minha Coleção
                 </a>
             </li>
@@ -76,9 +59,8 @@ if (isset($_GET['erro'])) {
 
 </div>
 
+<script src="_js/modal.js"></script>
 <script src="_js/autocomplete.js" defer></script>
 <script src="_js/buscar_ptbr.js" defer></script>
 </body>
 </html>
-
-<script src="_js/modal.js"></script>
