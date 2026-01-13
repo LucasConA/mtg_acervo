@@ -25,7 +25,7 @@ class AtualizarCartaController
             'tipo'       => (int) ($post['id_tipo'] ?? 0),
             'foil'       => (bool) ($post['foil'] ?? false),
             'quantidade' => (int) ($post['quantidade'] ?? 1),
-            'valor'      => (float) ($post['valorCarta'] ?? 0),
+            'valor' => (float) str_replace(',', '.', $post['valorCarta'] ?? 0),
         ];
 
         $service = new AtualizarCartaService(

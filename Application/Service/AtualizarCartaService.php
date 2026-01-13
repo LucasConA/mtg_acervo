@@ -19,13 +19,13 @@ class AtualizarCartaService
         try {
             $carta = $this->repository->buscarPorId($id);
 
-            $carta->nome       = $dados['nome'];
-            $carta->edicao     = $dados['edicao'];
-            $carta->raridade   = $dados['raridade'];
-            $carta->condicao   = $dados['condicao'];
-            $carta->idioma     = $dados['idioma'];
-            $carta->tipo       = $dados['tipo'];
-            $carta->foil       = (bool) $dados['foil'];
+            $carta->nome       = $dados['nome']       ?: $carta->nome;
+            $carta->edicao     = $dados['edicao']     ?: $carta->edicao;
+            $carta->raridade   = $dados['raridade']   ?: $carta->raridade;
+            $carta->condicao   = $dados['condicao']   ?: $carta->condicao;
+            $carta->idioma     = $dados['idioma']     ?: $carta->idioma;
+            $carta->tipo       = $dados['tipo']       ?: $carta->tipo;
+            $carta->foil       = $dados['foil'];
             $carta->quantidade = $dados['quantidade'];
             $carta->valor      = $dados['valor'];
 

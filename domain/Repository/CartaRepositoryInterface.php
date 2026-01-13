@@ -6,6 +6,7 @@ use App\AcervoMtg\Domain\Entity\Carta;
 interface CartaRepositoryInterface
 {
     public function buscarPorId(int $id): Carta;
+    public function buscarDadosEdicao(int $id): array;
     public function salvar(Carta $carta): void;
     public function atualizar(Carta $carta): void;
     public function excluir(int $id): void;

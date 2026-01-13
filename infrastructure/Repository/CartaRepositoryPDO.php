@@ -84,6 +84,47 @@ class CartaRepositoryPDO implements CartaRepositoryInterface
         ]);
     }
 
+    public function buscarDadosEdicao(int $id): array
+    {
+        $sql = "
+            SELECT
+                c.id,
+                c.nome,
+                c.id_edicao,
+                COALESCE(e.nome_pt, e.nome_en) AS edicao_nome,
+                c.id_raridade,
+                r.nome AS raridade_nome,
+                c.id_condicao,
+                co.nome AS condicao_nome,
+                c.id_idioma,
+                i.nome AS idioma_nome,
+                c.id_tipo,
+                t.nome AS tipo_nome,
+                c.foil,
+                c.quantidade,
+                c.valor
+            FROM cartas c
+            LEFT JOIN edicoes e ON e.id = c.id_edicao
+            LEFT JOIN raridades r ON r.id = c.id_raridade
+            LEFT JOIN condicao co ON co.id = c.id_condicao
+            LEFT JOIN idiomas i ON i.id = c.id_idioma
+            LEFT JOIN tipos t ON t.id = c.id_tipo
+            WHERE c.id = ?
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$id]);
+
+        $row = $stmt->fetch();
+
+        if (!$row) {
+            throw new RuntimeException('Carta não encontrada');
+        }
+
+        return $row;
+    }
+
+
     public function excluir(int $id): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM cartas WHERE id = ?");

@@ -53,7 +53,7 @@ class CartaController
             'condicao'   => (int)($post['condicao'] ?? 0),
             'idioma'     => (int)($post['idioma'] ?? 0),
             'tipo'       => (int)($post['tipo'] ?? 0),
-            'foil'       => isset($post['foil']),
+            'foil' => isset($post['foil']) ? (bool)$post['foil'] : false,
             'quantidade' => (int)($post['quantidade'] ?? 0),
             'valor'      => (float)($post['valor'] ?? 0),
         ];
