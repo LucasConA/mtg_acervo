@@ -2,6 +2,24 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use App\AcervoMtg\Http\Controller\CartaController;
+use App\AcervoMtg\Http\Controller\EditarCartaController;
+use App\AcervoMtg\Http\Controller\AtualizarCartaController;
+
+try {
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $controller = new AtualizarCartaController();
+        $controller->executar($_POST);
+        exit;
+    }
+
+    // GET
+    $controller = new EditarCartaController();
+    $carta = $controller->executar($_GET);
+
+} catch (Throwable $e) {
+    die($e->getMessage());
+}
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
@@ -32,16 +50,15 @@ try {
 <h1>Editar Carta</h1>
 
 <form method="post" action="/mtg_acervo/atualizar.php">
+    
     <input type="hidden" name="id" value="<?= $carta['id'] ?>">
 
-    <label>Nome</label>
     <input type="text" name="nomeCarta" value="<?= htmlspecialchars($carta['nome']) ?>">
 
-    <label>Quantidade</label>
     <input type="number" name="quantidade" value="<?= $carta['quantidade'] ?>">
 
-    <label>Valor</label>
-    <input type="text" name="valorCarta" value="<?= $carta['valor'] ?>">
+    <input type="number" step="0.01" name="valorCarta" value="<?= $carta['valor'] ?>">
+
 
     <!-- demais selects continuam iguais -->
 
