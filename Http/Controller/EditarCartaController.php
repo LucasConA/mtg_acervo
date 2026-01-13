@@ -1,6 +1,6 @@
 <?php
 
-/* recebe o id, bvusca a carta e devolve os dados prontos para a view */
+/* recebe o id, busca a carta e devolve os dados prontos para a view */
 
 namespace App\AcervoMtg\Http\Controller;
 
@@ -22,15 +22,16 @@ class EditarCartaController
         return [
             'id'         => $carta->id,
             'nome'       => $carta->nome,
-            'edicao'     => $carta->edicao,
-            'raridade'   => $carta->raridade,
-            'condicao'   => $carta->condicao,
-            'idioma'     => $carta->idioma,
-            'tipo'       => $carta->tipo,
+            'id_edicao'  => $carta->edicao,
+            'id_raridade'=> $carta->raridade,
+            'id_condicao'=> $carta->condicao,
+            'id_idioma'  => $carta->idioma,
+            'id_tipo'    => $carta->tipo,
             'foil'       => $carta->foil,
             'quantidade' => $carta->quantidade,
             'valor'      => $carta->valor,
         ];
     }
 }
+
 ?>
