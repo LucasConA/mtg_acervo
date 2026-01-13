@@ -25,7 +25,7 @@ class AtualizarCartaService
             $carta->condicao   = $dados['condicao'];
             $carta->idioma     = $dados['idioma'];
             $carta->tipo       = $dados['tipo'];
-            $carta->foil       = $dados['foil'];
+            $carta->foil       = (bool) $dados['foil'];
             $carta->quantidade = $dados['quantidade'];
             $carta->valor      = $dados['valor'];
 
