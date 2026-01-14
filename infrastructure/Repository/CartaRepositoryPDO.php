@@ -239,5 +239,20 @@ class CartaRepositoryPDO implements CartaRepositoryInterface
     return $row;
 }
 
+    public function buscarNomesPorTermo(string $termo): array
+{
+    $stmt = $this->pdo->prepare("
+        SELECT nome
+        FROM cartas
+        WHERE nome LIKE ?
+        ORDER BY nome
+        LIMIT 10
+    ");
+
+    $stmt->execute(['%' . $termo . '%']);
+
+    return array_column($stmt->fetchAll(), 'nome');
+}
+
 }
 ?>

@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
+define('BASE_URL', '/src/AcervoMtg');
+
 $mensagem = null;
 $tipo = null;
 
@@ -13,6 +15,7 @@ if (isset($_GET['erro'])) {
     $mensagem = 'Ocorreu um erro ao salvar a carta. Tente novamente.';
     $tipo = 'erro';
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -43,17 +46,17 @@ if (isset($_GET['erro'])) {
     <nav id="menu">
         <ul>
             <li>
-                <a href="/src/AcervoMtg/colecao.php" class="botao">
-                    Minha Coleção
+                <a href="<?= BASE_URL ?>/colecao.php" class="botao">
+                Minha Coleção
                 </a>
             </li>
         </ul>
     </nav>
 </header>
 
-<?php include 'views/adicionar_form.php'; ?>
-<?php include 'views/importar_form.php'; ?>
-<?php include 'views/buscar_form.php'; ?>
+<?php include __DIR__. 'views/adicionar_form.php'; ?>
+<?php include __DIR__. 'views/importar_form.php'; ?>
+<?php include __DIR__. 'views/buscar_form.php'; ?>
 
 <footer id="rodape"></footer>
 
