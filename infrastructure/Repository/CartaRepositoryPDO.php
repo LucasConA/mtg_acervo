@@ -63,26 +63,36 @@ class CartaRepositoryPDO implements CartaRepositoryInterface
     }
 
     public function atualizar(Carta $carta): void
-    {
-        $sql = "UPDATE cartas SET
-            nome=?, id_edicao=?, id_raridade=?, id_condicao=?,
-            id_idioma=?, id_tipo=?, foil=?, quantidade=?, valor=?
-            WHERE id=?";
+{
+    $sql = "
+        UPDATE cartas SET
+            nome = :nome,
+            id_edicao = :edicao,
+            id_raridade = :raridade,
+            id_condicao = :condicao,
+            id_idioma = :idioma,
+            id_tipo = :tipo,
+            foil = :foil,
+            quantidade = :quantidade,
+            valor = :valor
+        WHERE id = :id
+    ";
 
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
-            $carta->nome,
-            $carta->edicao,
-            $carta->raridade,
-            $carta->condicao,
-            $carta->idioma,
-            $carta->tipo,
-            $carta->foil ? 1 : 0,
-            $carta->quantidade,
-            $carta->valor,
-            $carta->id
-        ]);
-    }
+    $stmt = $this->pdo->prepare($sql);
+
+    $stmt->execute([
+        'id'         => $carta->id,
+        'nome'       => $carta->nome,
+        'edicao'     => $carta->edicao,
+        'raridade'   => $carta->raridade,
+        'condicao'   => $carta->condicao,
+        'idioma'     => $carta->idioma,
+        'tipo'       => $carta->tipo,
+        'foil'       => $carta->foil ? 1 : 0,
+        'quantidade' => $carta->quantidade,
+        'valor'      => $carta->valor,
+    ]);
+}
 
     public function buscarDadosEdicao(int $id): array
     {
