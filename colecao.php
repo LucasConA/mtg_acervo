@@ -1,9 +1,30 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
+define('BASE_URL', '/src/AcervoMtg');
+
+
 use App\AcervoMtg\Http\Controller\CartaController;
 
 $controller = new CartaController();
+
+/**
+ * POST — Excluir carta
+ */
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'excluir') {
+    try {
+        $controller->excluir($_POST);
+        header('Location: colecao.php');
+        exit;
+    } catch (Throwable $e) {
+        die($e->getMessage());
+    }
+}
+
+/**
+ * GET — Listar carta
+ */
 
 try {
     $ordem = $_GET['ordem'] ?? null;
@@ -15,6 +36,8 @@ try {
 } catch (Throwable $e) {
     die($e->getMessage());
 }
+
+
 
 ?>
 
@@ -33,7 +56,7 @@ try {
     <h1>Minha Coleção</h1>
 
     <nav id="menu">
-        <a href="/src/AcervoMtg/index.php" class="botao">Adicionar Carta</a>
+        <a href="<?= BASE_URL ?>/index.php" class="botao">Adicionar Carta</a>
     </nav>
 </header>
 
@@ -86,15 +109,15 @@ try {
             <td><?= number_format((float)($carta['valor'] ?? 0), 2, ',', '.') ?></td>
             <td>
                 <div class="acoes">
-                <a href="/src/AcervoMtg/editar_carta.php?id=<?= (int)$carta['id'] ?>" class="botao">
+                <a href="<?= BASE_URL ?>/editar_carta.php?id=<?= (int)$carta['id'] ?>" class="botao">
                     Editar
                 </a>
 
-                <form action="/src/AcervoMtg/excluir_carta.php" 
-                        method="post"
+                <form   method="post"
                         class="form-excluir"
                         onsubmit="return confirm('Tem certeza que deseja excluir esta carta?');">
-
+                        
+                        <input type="hidden" name="acao" value="excluir">
                         <input type="hidden" name="id" value="<?= $carta['id'] ?>">
                         <button type="submit" class="botao botao-excluir">Excluir</button>
                 </form>

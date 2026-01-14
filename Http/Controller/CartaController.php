@@ -7,7 +7,7 @@ use App\AcervoMtg\Application\Service\ExcluirCartaService;
 use App\AcervoMtg\Domain\Repository\CartaRepositoryInterface;
 use App\AcervoMtg\Infrastructure\Repository\CartaRepositoryPDO;
 use App\AcervoMtg\Infrastructure\Database\PDOConnection;
-
+use App\AcervoMtg\Application\Service\ListarCartasService;
 class CartaController
 {
     private CartaRepositoryInterface $repository;
@@ -20,22 +20,17 @@ class CartaController
     /**
      * Lista cartas da coleção
      */
-    public function listar(array $params = []): array
+    
+
+public function listar(array $query = []): array
 {
-    $ordem = $params['ordem'] ?? null;
+    $ordem = $query['ordem'] ?? null;
 
-    $cartas = $this->repository->listar($ordem);
+    $service = new ListarCartasService($this->repository);
 
-    $total = 0.0;
-    foreach ($cartas as $carta) {
-        $total += $carta['valor'] * $carta['quantidade'];
-    }
-
-    return [
-        'cartas' => $cartas,
-        'total'  => $total
-    ];
+    return $service->executar($ordem);
 }
+
 
 
     public function atualizar(array $post): void

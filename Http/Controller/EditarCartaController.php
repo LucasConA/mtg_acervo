@@ -4,7 +4,6 @@
 
 namespace App\AcervoMtg\Http\Controller;
 
-use App\AcervoMtg\Application\Service\BuscarCartaService;
 use App\AcervoMtg\Infrastructure\Repository\CartaRepositoryPDO;
 
 class EditarCartaController
@@ -17,11 +16,32 @@ class EditarCartaController
             throw new \InvalidArgumentException('ID inválido');
         }
 
-        $service = new BuscarCartaService(
-            new CartaRepositoryPDO()
-        );
+        $repository = new CartaRepositoryPDO();
+        $carta = $repository->buscarPorIdComRelacionamentos($id);
 
-        return $service->executar($id);
+        return [
+            'id' => (int) $carta['id'],
+            'nome' => $carta['nome'],
+
+            'id_edicao'   => (int) $carta['id_edicao'],
+            'edicao_nome' => $carta['edicao_nome'],
+
+            'id_raridade'   => (int) $carta['id_raridade'],
+            'raridade_nome' => $carta['raridade_nome'],
+
+            'id_condicao'   => (int) $carta['id_condicao'],
+            'condicao_nome' => $carta['condicao_nome'],
+
+            'id_idioma'   => (int) $carta['id_idioma'],
+            'idioma_nome' => $carta['idioma_nome'],
+
+            'id_tipo'   => (int) $carta['id_tipo'],
+            'tipo_nome' => $carta['tipo_nome'],
+
+            'foil'       => (bool) $carta['foil'],
+            'quantidade' => (int) $carta['quantidade'],
+            'valor'      => (float) $carta['valor'],
+        ];
     }
 }
 
