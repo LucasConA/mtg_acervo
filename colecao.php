@@ -5,11 +5,16 @@ use App\AcervoMtg\Http\Controller\CartaController;
 
 $controller = new CartaController();
 
-$resultado = $controller->listar($_GET);
+try {
+    $ordem = $_GET['ordem'] ?? null;
+    $resultado = $controller->listar(['ordem' => $ordem]);
 
-$cartas = $resultado['cartas'];
-$totalColecao = $resultado['total'];
-$ordem = $_GET['ordem'] ?? null;
+    $cartas = $resultado['cartas'];
+    $totalColecao = $resultado['total'];
+
+} catch (Throwable $e) {
+    die($e->getMessage());
+}
 
 ?>
 

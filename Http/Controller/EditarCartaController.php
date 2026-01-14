@@ -4,6 +4,7 @@
 
 namespace App\AcervoMtg\Http\Controller;
 
+use App\AcervoMtg\Application\Service\BuscarCartaService;
 use App\AcervoMtg\Infrastructure\Repository\CartaRepositoryPDO;
 
 class EditarCartaController
@@ -16,8 +17,11 @@ class EditarCartaController
             throw new \InvalidArgumentException('ID inválido');
         }
 
-        $repository = new CartaRepositoryPDO();
-        return $repository->buscarDadosEdicao($id);
+        $service = new BuscarCartaService(
+            new CartaRepositoryPDO()
+        );
+
+        return $service->executar($id);
     }
 }
 

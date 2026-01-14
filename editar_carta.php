@@ -2,13 +2,27 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use App\AcervoMtg\Http\Controller\EditarCartaController;
+use App\AcervoMtg\Http\Controller\AtualizarCartaController;
 
 try {
+
+    // POST → atualizar
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $controller = new AtualizarCartaController();
+        $controller->executar($_POST);
+
+        header('Location: colecao.php');
+        exit;
+    }
+
+    // GET → editar
     $controller = new EditarCartaController();
     $carta = $controller->executar($_GET);
+
 } catch (Throwable $e) {
     die($e->getMessage());
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
