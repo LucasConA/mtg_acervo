@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
+use App\AcervoMtg\Http\Controller\BuscarCartasController;
+
+
 define('BASE_URL', '/src/AcervoMtg');
 
 $mensagem = null;
@@ -54,9 +57,35 @@ if (isset($_GET['erro'])) {
     </nav>
 </header>
 
-<?php include __DIR__. 'views/adicionar_form.php'; ?>
-<?php include __DIR__. 'views/importar_form.php'; ?>
-<?php include __DIR__. 'views/buscar_form.php'; ?>
+<?php $filtros = [
+    'nome'     => $_GET['busca_nome'] ?? '',
+    'edicao'   => $_GET['busca_edicao'] ?? '',
+    'raridade' => $_GET['busca_raridade'] ?? '',
+    'tipo'     => $_GET['busca_tipo'] ?? '',
+];
+
+$cartas = [];
+$totalFiltrado = 0;
+$filtros = [];
+
+if (!empty($_GET)) {
+    $controllerBusca = new BuscarCartasController();
+    $cartas = $controllerBusca->executar($_GET);
+
+    $filtros = $_GET;
+
+    foreach ($cartas as $c) {
+        $totalFiltrado += ($c['valor'] * ($c['quantidade'] ?? 1));
+    }
+}
+
+
+?>
+
+
+<?php include __DIR__. '/views/adicionar_form.php'; ?>
+<?php include __DIR__. '/views/importar_form.php'; ?>
+<?php include __DIR__. '/views/buscar_form.php'; ?>
 
 <footer id="rodape"></footer>
 

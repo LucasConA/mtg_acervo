@@ -8,11 +8,15 @@
 
         <label for="busca_nome">Nome:</label>
         <input
-            type="text"
-            id="busca_nome"
-            name="busca_nome"
-            value="<?= htmlspecialchars($filtros['nome'] ?? '') ?>"
+        type="text"
+        id="busca_nome"
+        name="nomeCarta"
+        data-autocomplete="carta"
+        
+            
         >
+        <div id="autocomplete-list"></div>
+        <br>
 
         <label for="busca_edicao">Edição:</label>
         <select name="busca_edicao" id="busca_edicao">

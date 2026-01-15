@@ -19,6 +19,7 @@ interface CartaRepositoryInterface
     bool $foil
 ): bool;
     public function buscarNomesPorTermo(string $termo): array;
+    public function buscarComFiltros(array $filtros): array;
 
 }
 

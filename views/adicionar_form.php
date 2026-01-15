@@ -2,14 +2,14 @@
 
 <h2>Adicionar à coleção</h2>
 
-<form method="post" action="php/salvar_banco_dados.php">
+<form method="post" action="/php/salvar_banco_dados.php">
 
     <span class="campoTitulo">Nome:</span>
     <input
         type="text"
         id="nomeCarta"
         name="nomeCarta"
-        autocomplete="off"
+        data-autocomplete="carta"
         required
     >
     <div id="autocomplete-list"></div>

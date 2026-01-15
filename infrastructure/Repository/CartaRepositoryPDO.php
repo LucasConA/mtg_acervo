@@ -254,5 +254,57 @@ class CartaRepositoryPDO implements CartaRepositoryInterface
     return array_column($stmt->fetchAll(), 'nome');
 }
 
+    public function buscarComFiltros(array $filtros): array
+{
+    $sql = "
+        SELECT
+            c.id,
+            c.nome,
+            COALESCE(e.nome_pt, e.nome_en) AS edicao,
+            r.nome AS raridade,
+            co.nome AS condicao,
+            i.nome AS idioma,
+            t.nome AS tipo,
+            c.foil,
+            c.quantidade,
+            c.valor
+        FROM cartas c
+        JOIN edicoes e ON e.id = c.id_edicao
+        JOIN raridades r ON r.id = c.id_raridade
+        JOIN condicao co ON co.id = c.id_condicao
+        JOIN idiomas i ON i.id = c.id_idioma
+        JOIN tipos t ON t.id = c.id_tipo
+        WHERE 1 = 1
+    ";
+
+    $params = [];
+
+    if (!empty($filtros['nome'])) {
+        $sql .= " AND c.nome LIKE :nome";
+        $params[':nome'] = '%' . $filtros['nome'] . '%';
+    }
+
+    if (!empty($filtros['edicao'])) {
+        $sql .= " AND c.id_edicao = :edicao";
+        $params[':edicao'] = (int) $filtros['edicao'];
+    }
+
+    if (!empty($filtros['raridade'])) {
+        $sql .= " AND c.id_raridade = :raridade";
+        $params[':raridade'] = (int) $filtros['raridade'];
+    }
+
+    if (!empty($filtros['tipo'])) {
+        $sql .= " AND c.id_tipo = :tipo";
+        $params[':tipo'] = (int) $filtros['tipo'];
+    }
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute($params);
+
+    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+}
+
+
 }
 ?>
