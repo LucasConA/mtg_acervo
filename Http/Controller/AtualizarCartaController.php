@@ -17,15 +17,15 @@ class AtualizarCartaController
         }
 
         $dados = [
-            'nome'       => trim($post['nomeCarta'] ?? ''),
-            'edicao'     => (int) ($post['id_edicao'] ?? 0),
-            'raridade'   => (int) ($post['id_raridade'] ?? 0),
-            'condicao'   => (int) ($post['id_condicao'] ?? 0),
-            'idioma'     => (int) ($post['id_idioma'] ?? 0),
-            'tipo'       => (int) ($post['id_tipo'] ?? 0),
-            'foil'       => (bool) ($post['foil'] ?? false),
+            'nome'       => trim($post['nome'] ?? ''),
+            'edicao'     => (int) ($post['edicao'] ?? 0),
+            'raridade'   => (int) ($post['raridade'] ?? 0),
+            'condicao'   => (int) ($post['condicao'] ?? 0),
+            'idioma'     => (int) ($post['idioma'] ?? 0),
+            'tipo'       => (int) ($post['tipo'] ?? 0),
+            'foil'       => isset($post['foil']) && (int)$post['foil'] === 1,
             'quantidade' => (int) ($post['quantidade'] ?? 1),
-            'valor' => (float) str_replace(',', '.', $post['valorCarta'] ?? 0)
+            'valor'      => (float) str_replace(',', '.', $post['valor'] ?? 0),
         ];
 
         $service = new AtualizarCartaService(
@@ -34,8 +34,5 @@ class AtualizarCartaController
         );
 
         $service->executar($id, $dados);
-
-        header('Location: /mtg_acervo/colecao.php?sucesso=update');
-        exit;
     }
 }

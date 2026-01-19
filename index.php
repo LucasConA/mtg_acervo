@@ -5,6 +5,7 @@ use App\AcervoMtg\Http\Controller\BuscarCartasController;
 
 
 define('BASE_URL', '/src/AcervoMtg');
+define('BASE_PATH', __DIR__);
 
 $mensagem = null;
 $tipo = null;

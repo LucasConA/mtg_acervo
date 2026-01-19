@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
+define('BASE_URL', '/src/AcervoMtg');
+
+
 use App\AcervoMtg\Http\Controller\EditarCartaController;
 use App\AcervoMtg\Http\Controller\AtualizarCartaController;
 
@@ -11,7 +14,7 @@ try {
         $controller = new AtualizarCartaController();
         $controller->executar($_POST);
 
-        header('Location: colecao.php');
+        header('Location: ' . BASE_URL . '/colecao.php');
         exit;
     }
 
@@ -39,7 +42,7 @@ try {
     <h1>Editar Carta</h1>
 
     <nav id="menu">
-        <a href="/src/AcervoMtg/colecao.php" class="botao">
+        <a href="<?= BASE_URL ?>/colecao.php" class="botao">
             Voltar para a coleção
         </a>
     </nav>
@@ -47,7 +50,7 @@ try {
 
 <main>
 
-<form method="post" action="atualizar.php" class="form-carta">
+<form method="post" action="<?= BASE_URL ?>/editar_carta.php" class="form-carta">
 
     <input type="hidden" name="id" value="<?= (int)$carta['id'] ?>">
 

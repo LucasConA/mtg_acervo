@@ -29,15 +29,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetch('php/autocomplete_scryfall.php?q=' + encodeURIComponent(termo))
                     .then(res => res.json())
                     .then(json => {
-                        if (!json || !json.data) return;
 
-                        json.data.forEach(nome => {
+                        if (!json || !Array.isArray(json.data)) return;
+
+                        json.data.forEach(card => {
+
+                            if (!card.en) return;
+
                             const item = document.createElement('div');
                             item.className = 'autocomplete-item';
-                            item.textContent = nome;
+
+                            // Renderização PT + EN (se existir PT)
+                            if (card.pt) {
+                                item.innerHTML = `
+                                    <strong>${card.pt}</strong><br>
+                                    <small>${card.en}</small>
+                                `;
+                            } else {
+                                item.innerHTML = `<strong>${card.en}</strong>`;
+                            }
 
                             item.addEventListener('click', () => {
-                                input.value = nome;
+                                // SEMPRE salva o nome em inglês
+                                input.value = card.en;
                                 lista.innerHTML = '';
                             });
 
@@ -49,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.addEventListener('click', e => {
-            if (e.target !== input) {
+            if (e.target !== input && !lista.contains(e.target)) {
                 lista.innerHTML = '';
             }
         });
