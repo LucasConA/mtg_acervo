@@ -4,6 +4,9 @@ namespace App\AcervoMtg\Application\Service;
 
 use App\AcervoMtg\Domain\Repository\CartaRepositoryInterface;
 
+// Lista as cartas e calcula o valor total do acervo
+
+
 class ListarCartasService
 {
     public function __construct(

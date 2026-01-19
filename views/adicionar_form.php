@@ -1,4 +1,6 @@
+
 <section id="adicionar-cartas">
+
 
     <h2>Adicionar à coleção</h2>
 

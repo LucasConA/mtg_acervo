@@ -3,6 +3,9 @@ namespace App\AcervoMtg\Domain\Repository;
 
 use App\AcervoMtg\Domain\Entity\Carta;
 
+// Interface que define os métodos de acesso e persistência de dados relacionados à Carta */
+
+
 interface CartaRepositoryInterface
 {
     public function buscarPorId(int $id): Carta;

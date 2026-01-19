@@ -5,6 +5,8 @@
 namespace App\AcervoMtg\Http\Controller;
 
 use App\AcervoMtg\Infrastructure\Repository\CartaRepositoryPDO;
+use App\AcervoMtg\Infrastructure\Database\PDOConnection;
+use PDO;
 
 class EditarCartaController
 {
@@ -16,34 +18,47 @@ class EditarCartaController
             throw new \InvalidArgumentException('ID inválido');
         }
 
+        $pdo = PDOConnection::get();
         $repository = new CartaRepositoryPDO();
+
         $carta = $repository->buscarPorIdComRelacionamentos($id);
 
         return [
-            'id' => (int) $carta['id'],
-            'nome' => $carta['nome'],
+            'carta' => [
+                'id'         => (int)$carta['id'],
+                'nome'       => $carta['nome'],
+                'id_edicao'  => (int)$carta['id_edicao'],
+                'id_raridade'=> (int)$carta['id_raridade'],
+                'id_condicao'=> (int)$carta['id_condicao'],
+                'id_idioma'  => (int)$carta['id_idioma'],
+                'id_tipo'    => (int)$carta['id_tipo'],
+                'foil'       => (bool)$carta['foil'],
+                'quantidade' => (int)$carta['quantidade'],
+                'valor'      => (float)$carta['valor'],
+            ],
 
-            'id_edicao'   => (int) $carta['id_edicao'],
-            'edicao_nome' => $carta['edicao_nome'],
+            // LISTAS (sem novas funções)
+            'edicoes' => $pdo->query("
+                SELECT id, COALESCE(nome_pt, nome_en) AS nome
+                FROM edicoes
+                ORDER BY nome
+            ")->fetchAll(PDO::FETCH_ASSOC),
 
-            'id_raridade'   => (int) $carta['id_raridade'],
-            'raridade_nome' => $carta['raridade_nome'],
+            'raridades' => $pdo->query("
+                SELECT id, nome FROM raridades ORDER BY nome
+            ")->fetchAll(PDO::FETCH_ASSOC),
 
-            'id_condicao'   => (int) $carta['id_condicao'],
-            'condicao_nome' => $carta['condicao_nome'],
+            'condicoes' => $pdo->query("
+                SELECT id, nome FROM condicao ORDER BY nome
+            ")->fetchAll(PDO::FETCH_ASSOC),
 
-            'id_idioma'   => (int) $carta['id_idioma'],
-            'idioma_nome' => $carta['idioma_nome'],
+            'idiomas' => $pdo->query("
+                SELECT id, nome FROM idiomas ORDER BY nome
+            ")->fetchAll(PDO::FETCH_ASSOC),
 
-            'id_tipo'   => (int) $carta['id_tipo'],
-            'tipo_nome' => $carta['tipo_nome'],
-
-            'foil'       => (bool) $carta['foil'],
-            'quantidade' => (int) $carta['quantidade'],
-            'valor'      => (float) $carta['valor'],
+            'tipos' => $pdo->query("
+                SELECT id, nome FROM tipos ORDER BY nome
+            ")->fetchAll(PDO::FETCH_ASSOC),
         ];
     }
 }
-
-
-?>

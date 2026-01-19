@@ -5,6 +5,9 @@ namespace App\AcervoMtg\Application\Service;
 use App\AcervoMtg\Domain\Repository\CartaRepositoryInterface;
 use PDO;
 
+// Atualiza uma carta existente aplicando novos dados e salvando as alterações
+
+
 class AtualizarCartaService
 {
     public function __construct(
@@ -38,5 +41,3 @@ class AtualizarCartaService
         }
     }
 }
-
-?>

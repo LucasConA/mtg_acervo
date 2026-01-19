@@ -1,6 +1,8 @@
 <?php
 namespace App\AcervoMtg\Domain\Entity;
 
+/* Declara a classe carta */
+
 class Carta
 {
     public function __construct(

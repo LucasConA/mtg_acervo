@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 require __DIR__ . '/conexao.php';
+define('BASE_URL', 'http://localhost/src/AcervoMtg');
+
 
 /**
  * Campos obrigatórios do formulário
@@ -19,7 +21,7 @@ $requiredFields = [
 
 foreach ($requiredFields as $field) {
     if (!isset($_POST[$field]) || trim((string)$_POST[$field]) === '') {
-        header('Location: /mtg_acervo/index.php?erro=campo');
+        header('Location: " . BASE_URL . "/index.php?erro=campo');
         exit;
     }
 }
@@ -57,11 +59,12 @@ try {
         ':valor'      => $valor,
     ]);
 
-    header('Location: /mtg_acervo/index.php?sucesso=1');
+    header("Location: " . BASE_URL . "/index.php?sucesso=1");
     exit;
 
+   
 } catch (PDOException $e) {
-    // em produção: logar erro
-    header('Location: /mtg_acervo/index.php?erro=banco');
+    header("Location: " . BASE_URL . "/index.php?erro=1");
     exit;
+
 }

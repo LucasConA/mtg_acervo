@@ -7,6 +7,9 @@ define('BASE_URL', '/src/AcervoMtg');
 use App\AcervoMtg\Http\Controller\EditarCartaController;
 use App\AcervoMtg\Http\Controller\AtualizarCartaController;
 
+
+
+
 try {
 
     // POST → atualizar
@@ -25,6 +28,16 @@ try {
 } catch (Throwable $e) {
     die($e->getMessage());
 }
+
+    $data = $controller->executar($_GET);
+
+    $carta     = $data['carta'];
+    $edicoes   = $data['edicoes'];
+    $raridades = $data['raridades'];
+    $condicoes = $data['condicoes'];
+    $idiomas   = $data['idiomas'];
+    $tipos     = $data['tipos'];
+
 
 ?>
 <!DOCTYPE html>
@@ -59,38 +72,59 @@ try {
 
     <label class="campoTitulo">Edição</label>
     <select name="edicao" required>
-        <option value="<?= $carta['id_edicao'] ?>">
-            <?= htmlspecialchars($carta['edicao_nome']) ?>
+    <?php foreach ($edicoes as $e): ?>
+        <option value="<?= $e['id'] ?>"
+            <?= $e['id'] === $carta['id_edicao'] ? 'selected' : '' ?>>
+            <?= htmlspecialchars($e['nome']) ?>
         </option>
+    <?php endforeach; ?>
     </select>
+
 
     <label class="campoTitulo">Raridade</label>
     <select name="raridade" required>
-        <option value="<?= $carta['id_raridade'] ?>">
-            <?= htmlspecialchars($carta['raridade_nome']) ?>
+    <?php foreach ($raridades as $r): ?>
+        <option value="<?= $r['id'] ?>"
+            <?= $r['id'] === $carta['id_raridade'] ? 'selected' : '' ?>>
+            <?= htmlspecialchars($r['nome']) ?>
         </option>
+    <?php endforeach; ?>
     </select>
+
+
 
     <label class="campoTitulo">Condição</label>
     <select name="condicao" required>
-        <option value="<?= $carta['id_condicao'] ?>">
-            <?= htmlspecialchars($carta['condicao_nome']) ?>
+    <?php foreach ($condicoes as $c): ?>
+        <option value="<?= $c['id'] ?>"
+            <?= $c['id'] === $carta['id_condicao'] ? 'selected' : '' ?>>
+            <?= htmlspecialchars($c['nome']) ?>
         </option>
+    <?php endforeach; ?>
     </select>
+
 
     <label class="campoTitulo">Idioma</label>
     <select name="idioma" required>
-        <option value="<?= $carta['id_idioma'] ?>">
-            <?= htmlspecialchars($carta['idioma_nome']) ?>
+    <?php foreach ($idiomas as $i): ?>
+        <option value="<?= $i['id'] ?>"
+            <?= $i['id'] === $carta['id_idioma'] ? 'selected' : '' ?>>
+            <?= htmlspecialchars($i['nome']) ?>
         </option>
+    <?php endforeach; ?>
     </select>
+
 
     <label class="campoTitulo">Tipo</label>
     <select name="tipo" required>
-        <option value="<?= $carta['id_tipo'] ?>">
-            <?= htmlspecialchars($carta['tipo_nome']) ?>
+    <?php foreach ($tipos as $t): ?>
+        <option value="<?= $t['id'] ?>"
+            <?= $t['id'] === $carta['id_tipo'] ? 'selected' : '' ?>>
+            <?= htmlspecialchars($t['nome']) ?>
         </option>
+    <?php endforeach; ?>
     </select>
+
 
     <label class="campoTitulo">Foil</label>
 

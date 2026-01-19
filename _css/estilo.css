@@ -381,3 +381,12 @@ footer#rodape p {
 .form-excluir {
     display: inline-block;
 }
+
+
+form input[type="radio"] {
+    display: inline-block;
+    width: auto;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+}
