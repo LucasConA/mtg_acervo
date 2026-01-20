@@ -19,6 +19,7 @@ div#interface {
     background-color: #202020;
     box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
     padding: 15px;
+    overflow: visible;
 }
 
 /* Textos */
@@ -44,6 +45,11 @@ header#cabecalho {
     border-bottom: 1px solid #606060;
     height: 80px;
     padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #202020;
+    
 }
 
 header#cabecalho h1 {
@@ -51,6 +57,17 @@ header#cabecalho h1 {
     color: #d4af37;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
     margin: 0;
+}
+
+.barra-importacao {
+    position: sticky;
+    top: 80px; /* altura do header */
+    background-color: #202020;
+    padding: 10px 0;
+    z-index: 50;
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid #444;
 }
 
 h1 {

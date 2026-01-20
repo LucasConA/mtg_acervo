@@ -30,6 +30,19 @@ function buscarEdicao(PDO $pdo, string $valor) {
     return $sql->fetchColumn() ?: null;
 }
 
+function buscarOuCriarEdicao(PDO $pdo, string $valor) {
+    $valor = trim($valor);
+    if ($valor === '') return null;
+
+    $id = buscarEdicao($pdo, $valor);
+    if ($id) return $id;
+
+    $stmt = $pdo->prepare("INSERT INTO edicoes (nome_pt) VALUES (?)");
+    $stmt->execute([$valor]);
+
+    return $pdo->lastInsertId();
+}
+
 function carregarEdicoes(PDO $pdo) {
     return $pdo->query("
         SELECT id, COALESCE(nome_pt, nome_en) AS nome
@@ -46,6 +59,29 @@ function carregarTabela(PDO $pdo, string $tabela) {
     ")->fetchAll(PDO::FETCH_ASSOC);
 }
 
+    function normalizarValorMonetario($valor): float
+{
+    if ($valor === null) return 0.0;
+
+    // força string
+    $valor = (string) $valor;
+
+    // remove tudo que não seja número, vírgula ou ponto
+    $valor = preg_replace('/[^0-9.,]/', '', $valor);
+
+    // se tiver vírgula e ponto, assume formato BR (1.234,56)
+    if (str_contains($valor, ',') && str_contains($valor, '.')) {
+        $valor = str_replace('.', '', $valor);
+        $valor = str_replace(',', '.', $valor);
+    } else {
+        // apenas vírgula → decimal BR
+        $valor = str_replace(',', '.', $valor);
+    }
+
+    return (float) $valor;
+}
+
+
 /* ===============================
    UPLOAD
 ================================ */
@@ -57,15 +93,6 @@ if (!isset($_FILES['arquivo']) || $_FILES['arquivo']['error'] !== 0) {
 $planilha = IOFactory::load($_FILES['arquivo']['tmp_name']);
 $linhas   = $planilha->getActiveSheet()->toArray(null, true, true, true);
 
-/* ===============================
-   DROPDOWNS
-================================ */
-
-$edicoes   = carregarEdicoes($pdo);
-$raridades = carregarTabela($pdo, 'raridades');
-$condicoes = carregarTabela($pdo, 'condicao');
-$idiomas   = carregarTabela($pdo, 'idiomas');
-$tipos     = carregarTabela($pdo, 'tipos');
 
 /* ===============================
    PROCESSAMENTO
@@ -73,9 +100,15 @@ $tipos     = carregarTabela($pdo, 'tipos');
 
 $preview = [];
 $errosGlobais = [];
-$linhaNum = 1;
+$linhaNum = 2;
+$primeira = true;
 
 foreach ($linhas as $linha) {
+
+    if ($primeira) {
+        $primeira = false;
+        continue;
+    }
 
     $nome = trim($linha['A'] ?? '');
     if ($nome === '') { $linhaNum++; continue; }
@@ -86,10 +119,16 @@ foreach ($linhas as $linha) {
     $idiTxt    = trim($linha['E'] ?? '');
     $tipoTxt   = trim($linha['F'] ?? '');
     $foilTxt   = strtolower(trim($linha['G'] ?? 'normal'));
-    $qtd       = (int)($linha['H'] ?? 1);
-    $valor     = str_replace(',', '.', $linha['I'] ?? 0);
 
-    $idEdicao   = buscarEdicao($pdo, $edicaoTxt);
+    // QUANTIDADE
+    $qtdTxt = trim($linha['H'] ?? '1');
+    $qtdTxt = str_replace('.', '', $qtdTxt);
+    $qtd = (int) $qtdTxt;
+
+    // VALOR
+    $valor = normalizarValorMonetario($linha['I'] ?? '0');
+
+    $idEdicao   = buscarOuCriarEdicao($pdo, $edicaoTxt);
     $idRaridade = buscarId($pdo, 'raridades', $rarTxt);
     $idCondicao = buscarId($pdo, 'condicao', $condTxt);
     $idIdioma   = buscarId($pdo, 'idiomas', $idiTxt);
@@ -113,19 +152,30 @@ foreach ($linhas as $linha) {
     }
 
     $preview[] = [
-        'nome' => $nome,
-        'edicao' => $idEdicao,
-        'raridade' => $idRaridade,
-        'condicao' => $idCondicao,
-        'idioma' => $idIdioma,
-        'tipo' => $idTipo,
-        'foil' => $foilTxt === 'foil' ? 1 : 0,
+        'nome'       => $nome,
+        'edicao'     => $idEdicao,
+        'raridade'   => $idRaridade,
+        'condicao'   => $idCondicao,
+        'idioma'     => $idIdioma,
+        'tipo'       => $idTipo,
+        'foil'       => $foilTxt === 'foil' ? 1 : 0,
         'quantidade' => max(1, $qtd),
-        'valor' => (float)$valor
+        'valor'      => $valor
     ];
 
     $linhaNum++;
 }
+
+/* ===============================
+   DROPDOWNS
+================================ */
+
+$edicoes   = carregarEdicoes($pdo);
+$raridades = carregarTabela($pdo, 'raridades');
+$condicoes = carregarTabela($pdo, 'condicao');
+$idiomas   = carregarTabela($pdo, 'idiomas');
+$tipos     = carregarTabela($pdo, 'tipos');
+
 
 /* ===============================
    BLOQUEIA SE HÁ ERROS
@@ -133,7 +183,6 @@ foreach ($linhas as $linha) {
 
 if ($errosGlobais) {
     echo "<h2>Erro na importação</h2>";
-    echo "<p>O arquivo contém erros e não pode ser importado.</p>";
     echo "<ul>";
     foreach ($errosGlobais as $e) echo "<li>$e</li>";
     echo "</ul>";
@@ -155,17 +204,16 @@ if ($errosGlobais) {
 
 <header id="cabecalho">
     <h1>MTG Acervo</h1>
-    <nav id="menu">
-        <ul>
-            <li><a href="../index.php">Voltar</a></li>
-            <li><a href="../colecao.php">Coleção</a></li>
-        </ul>
-    </nav>
 </header>
 
-<h1>Preview da Importação</h1>
-
 <form method="post" action="importar_confirmar.php">
+
+<br>
+<div class="barra-importacao">
+    <button class="botao">Confirmar Importação</button>
+    <a href="../index.php" class="botao">Cancelar</a>
+</div>
+
 
 <table id="preview-importacao">
 <tr>
@@ -182,9 +230,7 @@ if ($errosGlobais) {
 
 <?php foreach ($preview as $i => $c): ?>
 <tr>
-    <td>
-        <input type="text" name="cartas[<?= $i ?>][nome]" value="<?= htmlspecialchars($c['nome']) ?>">
-    </td>
+    <td><input name="cartas[<?= $i ?>][nome]" value="<?= htmlspecialchars($c['nome']) ?>"></td>
 
     <td>
         <select name="cartas[<?= $i ?>][edicao]">
@@ -223,24 +269,14 @@ if ($errosGlobais) {
         </select>
     </td>
 
-    <td>
-        <input type="number" name="cartas[<?= $i ?>][quantidade]" min="1" value="<?= $c['quantidade'] ?>">
-    </td>
-
-    <td>
-        <input type="number" step="0.01" name="cartas[<?= $i ?>][valor]" value="<?= $c['valor'] ?>">
-    </td>
+    <td><input type="number" name="cartas[<?= $i ?>][quantidade]" value="<?= $c['quantidade'] ?>"></td>
+    <td><input type="number" step="0.01" name="cartas[<?= $i ?>][valor]" value="<?= $c['valor'] ?>"></td>
 </tr>
 <?php endforeach; ?>
 </table>
 
-<br>
-
-<button type="submit" class="botao">Confirmar Importação</button>
-<a href="../index.php" class="botao">Cancelar</a>
 
 </form>
-
 </div>
 </body>
 </html>
