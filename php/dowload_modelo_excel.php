@@ -1,5 +1,9 @@
 <?php
-$arquivo = __DIR__ . '/../assets/modelos/modelo_importacao_cartas.xlsx';
+
+define('BASE_URL', '/src/AcervoMtg');
+define('BASE_PATH', __DIR__);
+
+$arquivo = BASE_PATH . '/assets/modelos/modelo_importacao_cartas.xlsx';
 
 if (!file_exists($arquivo)) {
     http_response_code(404);

@@ -1,6 +1,6 @@
 <h2>Importar cartas via Excel</h2>
 
-<a href="/mtg_acervo/php/download_modelo_excel.php" class="botao">
+<a href="../AcervoMtg/assets/modelos/modelo_importacao_cartas.xlsx" class="botao" download>
     Baixar modelo de Excel
 </a>
 <small style="color:#aaa;">
