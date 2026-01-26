@@ -1,7 +1,13 @@
 <?php
+
 namespace App\AcervoMtg\Domain\Entity;
 
-/* Declara a classe carta */
+use App\AcervoMtg\Domain\ValueObject\Quantidade;
+use App\AcervoMtg\Domain\ValueObject\Dinheiro;
+use App\AcervoMtg\Domain\ValueObject\Raridade;
+use App\AcervoMtg\Domain\ValueObject\Condicao;
+use App\AcervoMtg\Domain\ValueObject\Idioma;
+use App\AcervoMtg\Domain\ValueObject\Tipo;
 
 class Carta
 {
@@ -9,12 +15,12 @@ class Carta
         public int $id,
         public string $nome,
         public int $edicao,
-        public int $raridade,
-        public int $condicao,
-        public int $idioma,
-        public int $tipo,
+        public Raridade $raridade,
+        public Condicao $condicao,
+        public Idioma $idioma,
+        public Tipo $tipo,
         public bool $foil,
-        public int $quantidade,
-        public float $valor
+        public Quantidade $quantidade,
+        public Dinheiro $valor
     ) {}
 }
