@@ -1,7 +1,8 @@
 <?php
+require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/php/auth.php';
 
-define('BASE_URL', '/src/AcervoMtg');
 
 
 use App\AcervoMtg\Http\Controller\CartaController;
@@ -55,9 +56,21 @@ try {
 <header id="cabecalho">
     <h1>Minha Coleção</h1>
 
-    <nav id="menu">
-        <a href="<?= BASE_URL ?>/index.php" class="botao">Adicionar Carta</a>
-    </nav>
+     <nav id="menu">
+        <ul>
+            <li>Olá, <?= $_SESSION['usuario_nome'] ?></li>
+            <li>
+                <a href="<?= BASE_URL ?>/index.php" class="botao">
+                Adicionar Carta
+                </a>
+            </li>
+        </ul>
+
+        <ul>
+
+            <li><a href="<?= BASE_URL ?>/logout.php" class="botao">Sair</a></li>
+        </ul>
+
 </header>
 
 <main>

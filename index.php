@@ -1,13 +1,10 @@
 <?php
+require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/php/auth.php';
-
+require_once __DIR__ . '/php/auth.php';
 
 use App\AcervoMtg\Http\Controller\BuscarCartasController;
 
-
-define('BASE_URL', '/src/AcervoMtg');
-define('BASE_PATH', __DIR__);
 
 $mensagem = null;
 $tipo = null;
@@ -38,6 +35,8 @@ if (isset($_GET['erro'])) {
 <header id="cabecalho">
     <h1>Acervo MTG</h1>
 
+
+
     <?php if ($mensagem): ?>
         <div class="modal" id="modal-feedback">
             <div class="modal-box">
@@ -51,12 +50,19 @@ if (isset($_GET['erro'])) {
 
     <nav id="menu">
         <ul>
+            <li>Olá, <?= $_SESSION['usuario_nome'] ?></li>
             <li>
                 <a href="<?= BASE_URL ?>/colecao.php" class="botao">
                 Minha Coleção
                 </a>
             </li>
         </ul>
+
+        <ul>
+
+            <li><a href="<?= BASE_URL ?>/logout.php" class="botao">Sair</a></li>
+        </ul>
+
     </nav>
 </header>
 

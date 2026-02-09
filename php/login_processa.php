@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require __DIR__ . '/../config.php';
+require_once __DIR__ . '/../config.php';
 require __DIR__ . '/conexao.php';
 
 $email = $_POST['email'] ?? '';

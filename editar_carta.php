@@ -1,7 +1,7 @@
 <?php
+require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/vendor/autoload.php';
-
-define('BASE_URL', '/src/AcervoMtg');
+require_once __DIR__ . '/php/auth.php';
 
 
 use App\AcervoMtg\Http\Controller\EditarCartaController;

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require __DIR__ . '/../config.php';
+require_once __DIR__ . '/../config.php';
 
 // impede cache de páginas protegidas
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
