@@ -1,4 +1,12 @@
-<?php session_start(); ?>
+<?php 
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+define('BASE_URL', '/src/AcervoMtg');
+define('BASE_PATH', __DIR__);
+
+ ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +16,7 @@
 
 <h2>Login</h2>
 
-<form method="POST" action="/php/login_processa.php">
+<form method="POST" action="<?= BASE_URL ?>/php/login_processa.php">
     <input type="email" name="email" placeholder="Email" required>
     <br><br>
     <input type="password" name="senha" placeholder="Senha" required>

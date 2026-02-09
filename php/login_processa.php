@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+require __DIR__ . '/../config.php';
 require __DIR__ . '/conexao.php';
 
 $email = $_POST['email'] ?? '';
@@ -12,12 +14,12 @@ $stmt->execute(['email' => $email]);
 $user = $stmt->fetch();
 
 if (!$user) {
-    header("Location: login.php?erro=1");
+    header("Location: " . BASE_URL . "/login.php?erro=1");
     exit;
 }
 
 if (!password_verify($senha, $user['senha_hash'])) {
-    header("Location: login.php?erro=1");
+    header("Location: " . BASE_URL . "/login.php?erro=1");
     exit;
 }
 
@@ -25,5 +27,5 @@ if (!password_verify($senha, $user['senha_hash'])) {
 $_SESSION['usuario_id'] = $user['id'];
 $_SESSION['usuario_nome'] = $user['nome'];
 
-header("Location: index.php");
+header("Location: " . BASE_URL . "/index.php");
 exit;
