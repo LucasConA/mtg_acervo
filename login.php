@@ -8,7 +8,7 @@
 
 <h2>Login</h2>
 
-<form method="POST" action="login_processa.php">
+<form method="POST" action="/php/login_processa.php">
     <input type="email" name="email" placeholder="Email" required>
     <br><br>
     <input type="password" name="senha" placeholder="Senha" required>
