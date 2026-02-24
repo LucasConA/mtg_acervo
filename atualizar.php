@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="">
-    <title></title>
-</head>
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
 
-<body>
-<div>
-    <?php
-    ?>
-</div>
-</body>
-</html>
+use App\AcervoMtg\Http\Controller\AtualizarCartaController;
+
+$controller = new AtualizarCartaController();
+
+try {
+    $controller->executar($_POST);
+} catch (Throwable $e) {
+    die($e->getMessage());
+}
