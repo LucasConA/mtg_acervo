@@ -1,7 +1,6 @@
 <?php
 
-define('BASE_URL', '/src/AcervoMtg');
-define('BASE_PATH', __DIR__);
+require_once __DIR__ . '/config.php';
 
 $arquivo = BASE_PATH . '/assets/modelos/modelo_importacao_cartas.xlsx';
 

@@ -6,7 +6,7 @@ require __DIR__ . '/config.php';
 <head>
     <meta charset="UTF-8">
     <title>Login - Acervo MTG</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/estilo.css">
+    <link rel="stylesheet" href="_css/estilo.css">
 </head>
 <body>
 
@@ -17,7 +17,7 @@ require __DIR__ . '/config.php';
     </header>
 
     <section style="max-width:400px;margin:80px auto;">
-        <h2 style="text-align:center;color:#d4af37;">Acesso ao sistema</h2>
+        <h2 style="text-align:center;color:#d4af37;">Login</h2>
 
         <?php if(isset($_GET['erro'])): ?>
             <div class="mensagem erro">Email ou senha inválidos</div>
@@ -26,10 +26,10 @@ require __DIR__ . '/config.php';
         <form method="POST" action="<?= BASE_URL ?>/php/login_processa.php">
             
             <label class="campoTitulo">Email</label>
-            <input type="email" name="email" required>
+            <input type="email" name="email" required><br>
 
             <label class="campoTitulo">Senha</label>
-            <input type="password" name="senha" required>
+            <input type="password" name="senha" required><br>
 
             <br>
             <button class="botao" style="width:100%">Entrar</button>
