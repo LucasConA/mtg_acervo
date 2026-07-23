@@ -12,11 +12,11 @@ Um gerenciador de coleção e acervo pessoal de cartas de Magic: The Gathering m
 
 | Tela de Login | Coleção / Dashboard | Detalhes e Edição |
 | :---: | :---: | :---: |
-| ![Tela de Login](_imagens/login.png) | ![Tela da Coleção](_imagens/dashboard.png) | ![Tela de Edição](_imagens/edit_card.png) |
+| ![Tela de Login](_imagens/login.PNG) | ![Tela da Coleção](_imagens/dashboard.PNG) | ![Tela de Edição](_imagens/edit_card.PNG) |
 
 | Adicionar à Coleção | Buscar Carta | Importação de Cartas |
 | :---: | :---: | :---: |
-| ![Adicionar à Coleção](_imagens/add_card.png) | ![Buscar Carta](_imagens/search_card.png) | ![Importação de Cartas](_imagens/import.png) |
+| ![Adicionar à Coleção](_imagens/add_card.PNG) | ![Buscar Carta](_imagens/search_card.PNG) | ![Importação de Cartas](_imagens/import.PNG) |
 
 ---
 
