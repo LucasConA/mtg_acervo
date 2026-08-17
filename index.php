@@ -87,10 +87,14 @@ if (!empty($_GET)) {
         $totalFiltrado += ($c['valor'] * ($c['quantidade'] ?? 1));
     }
 }
-
-
 ?>
 
+
+<?php if (isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] === 0): ?>
+    <div style="background-color: #5d2525; color: #ffb3b3; border: 1px solid #ff4d4d; padding: 10px; text-align: center; margin-bottom: 20px; border-radius: 4px; font-weight: bold;">
+        Modo de Demonstração: Você não pode alterar a coleção de cartas.
+    </div>
+<?php endif; ?>
 
 <?php include __DIR__. '/views/adicionar_form.php'; ?>
 <?php include __DIR__. '/views/importar_form.php'; ?>

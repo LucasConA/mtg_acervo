@@ -34,6 +34,11 @@ require __DIR__ . '/config.php';
             <br>
             <button class="botao" style="width:100%">Entrar</button>
         </form>
+        
+       	<form method="POST" action="<?= BASE_URL ?>/php/login_processa.php" style="margin-top: 15px;">
+            <input type="hidden" name="visitante" value="1">
+            <button class="botao" style="width:100%; background-color: #444; border-color: #666;">Entrar como Visitante</button>
+        </form>
     </section>
 
 </div>

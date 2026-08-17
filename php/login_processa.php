@@ -4,6 +4,14 @@ session_start();
 require_once __DIR__ . '/../config.php';
 require __DIR__ . '/conexao.php';
 
+// Check if login as guest was requested
+if (isset($_POST['visitante'])) {
+    $_SESSION['usuario_id'] = 0;
+    $_SESSION['usuario_nome'] = 'Visitante';
+    header("Location: " . BASE_URL . "/index.php");
+    exit;
+}
+
 $email = $_POST['email'] ?? '';
 $senha = $_POST['senha'] ?? '';
 
