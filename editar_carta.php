@@ -3,6 +3,11 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/php/auth.php';
 
+if (isset($_SESSION['usuario_id']) && (int)$_SESSION['usuario_id'] === 0) {
+    header("Location: " . BASE_URL . "/index.php");
+    exit;
+}
+
 
 use App\AcervoMtg\Http\Controller\EditarCartaController;
 use App\AcervoMtg\Http\Controller\AtualizarCartaController;

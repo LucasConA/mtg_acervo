@@ -1,4 +1,11 @@
 <?php
+session_start();
+require_once __DIR__ . '/../config.php';
+if (isset($_SESSION['usuario_id']) && (int)$_SESSION['usuario_id'] === 0) {
+    header("Location: " . BASE_URL . "/aviso.php");
+    exit;
+}
+
 require 'conexao.php';
 
 if (empty($_POST['cartas']) || !is_array($_POST['cartas'])) {

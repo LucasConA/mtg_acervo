@@ -1,6 +1,13 @@
 <?php
 declare(strict_types=1);
 
+session_start();
+require_once __DIR__ . '/../config.php';
+if (isset($_SESSION['usuario_id']) && (int)$_SESSION['usuario_id'] === 0) {
+    header("Location: " . BASE_URL . "/aviso.php");
+    exit;
+}
+
 require __DIR__ . '/conexao.php';
 define('BASE_URL', 'http://localhost/src/AcervoMtg');
 
