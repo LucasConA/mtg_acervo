@@ -18,7 +18,12 @@ Um gerenciador de coleção e acervo pessoal de cartas de Magic: The Gathering m
 | :---: | :---: | :---: |
 | ![Adicionar à Coleção](_imagens/add_card.PNG) | ![Buscar Carta](_imagens/search_card.PNG) | ![Importação de Cartas](_imagens/import.PNG) |
 
+| Preview da Alteração de preços |
+| :---: |
+| ![Preview Alteração de preços](_imagens/preview_alterar_precos.PNG) |
+
 ---
+
 
 ## Funcionalidades
 
@@ -27,3 +32,4 @@ Um gerenciador de coleção e acervo pessoal de cartas de Magic: The Gathering m
 - **Tradução Inteligente (PT-BR)**: Mapeamento automático de nomes das cartas para Português (PT-BR) integrado à API.
 - **Importação em Lote**: Leitura e processamento de dados em lote a partir de arquivos Excel (`.xlsx`, `.xls`) e CSV usando PhpSpreadsheet com tela de mapeamento e preview.
 - **Filtros e Ordenação**: Filtre suas cartas por edição, raridade, tipo ou nome e ordene por valor e ordem alfabética.
+- **Atualização Automática de Preços**: Painel integrado que consulta em tempo real lojas buscando o valor exato compatível com a edição, condição (NM, SP, etc.) e status Foil da carta, exibindo um preview com as alterações antes de confirmar a gravação.
